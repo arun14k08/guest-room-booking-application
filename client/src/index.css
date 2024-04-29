@@ -8,3 +8,10 @@
 * {
     font-family: "Roboto", sans-serif;
 }
+
+input{
+    border: 1px solid rgb(121, 121, 121);
+    padding: 4px 8px;
+    border-radius: 4px;
+    margin: 4px;
+}
