@@ -7,6 +7,7 @@ const RegisterPage = () => {
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
+    const [typeOfUser, setTypeOfUser] = useState("");
     const [alertMessage, setAlertMessage] = useState("");
     const [alertType, setAlertType] = useState("");
     // submitting form data to register a new user
@@ -18,6 +19,7 @@ const RegisterPage = () => {
                 email,
                 phone,
                 password,
+                type: typeOfUser,
             })
             .then((response) => {
                 console.log(response.data);
@@ -27,11 +29,11 @@ const RegisterPage = () => {
             .catch((error) => console.log(error));
     };
     return (
-        <div className="flex flex-col items-center justify-center gap-2">
+        <div className="flex flex-col items-center justify-center gap-2 mt-24">
             <Alert severity={alertType}>{alertMessage}</Alert>
             <form
                 method="post"
-                onSubmit={() => handleSubmit(event)}
+                onSubmit={(event) => handleSubmit(event)}
                 className="flex flex-col justify-center gap-2 bg-slate-200 px-6 py-4 rounded-lg"
             >
                 <h2 className="text-bold text-[32px] text-center font-dance">
@@ -41,14 +43,18 @@ const RegisterPage = () => {
                     type="text"
                     placeholder="Name"
                     value={name}
-                    onChange={(event) => setName(event.target.value)}
+                    onChange={(event) =>
+                        setName(event.target.value.toUpperCase())
+                    }
                     required
                 />
                 <input
                     type="text"
                     placeholder="Email"
                     value={email}
-                    onChange={(event) => setEmail(event.target.value)}
+                    onChange={(event) =>
+                        setEmail(event.target.value.toLowerCase())
+                    }
                     required
                 />
                 <input
@@ -58,6 +64,17 @@ const RegisterPage = () => {
                     onChange={(event) => setPhone(event.target.value)}
                     required
                 />
+                <select
+                    name="type"
+                    onChange={(event) => {
+                        setTypeOfUser(event.target.value);
+                    }}
+                    value={typeOfUser}
+                    defaultValue="owner"
+                >
+                    <option value="customer">Customer</option>
+                    <option value="owner">House Owner</option>
+                </select>
                 <input
                     type="password"
                     value={password}
@@ -65,18 +82,18 @@ const RegisterPage = () => {
                     onChange={(event) => setPassword(event.target.value)}
                     required
                 />
-                <p>
-                    Already have an account?{" "}
-                    <Link to={"/login"} className="underline">
-                        Login
-                    </Link>
-                </p>
                 <button
                     type="submit"
                     className="px-4 py-2 text-white rounded-lg cursor-pointer h-fit bg-primary"
                 >
                     Register
                 </button>
+                <p>
+                    Already have an account?{" "}
+                    <Link to={"/login"} className="underline">
+                        Login
+                    </Link>
+                </p>
             </form>
         </div>
     );
