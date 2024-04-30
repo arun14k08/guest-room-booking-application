@@ -1,12 +1,14 @@
 import axios from "axios";
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-
+import Alert from "@mui/material/Alert";
 const RegisterPage = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
+    const [alertMessage, setAlertMessage] = useState("");
+    const [alertType, setAlertType] = useState("");
     // submitting form data to register a new user
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -17,11 +19,16 @@ const RegisterPage = () => {
                 phone,
                 password,
             })
-            .then((response) => console.log(response.data))
+            .then((response) => {
+                console.log(response.data);
+                setAlertMessage(response.data.message);
+                setAlertType(response.data.type);
+            })
             .catch((error) => console.log(error));
     };
     return (
-        <div className="flex  items-center justify-center h-[calc(100vh_-_64px)]">
+        <div className="flex flex-col items-center justify-center gap-2">
+            <Alert severity={alertType}>{alertMessage}</Alert>
             <form
                 method="post"
                 onSubmit={() => handleSubmit(event)}

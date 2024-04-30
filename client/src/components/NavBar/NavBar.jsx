@@ -1,5 +1,5 @@
 import { BrandLogo, SearchIcon } from "./assets/svgAssets";
-import React, from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
 const NavBar = () => {
@@ -19,7 +19,8 @@ const NavBar = () => {
                 />
                 <SearchIcon />
             </div> */}
-              <Link to={"/login"}
+            <Link
+                to={"/login"}
                 className="px-4 py-2 text-white rounded-lg cursor-pointer h-fit bg-primary"
             >
                 Login / Register
