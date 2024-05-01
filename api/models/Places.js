@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 const { createSchema } = mongoose;
 
 const placeSchema = createSchema({
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+    },
     name: {
         type: String,
         required: true,
