@@ -13,6 +13,10 @@ const AccountPage = () => {
         });
     };
 
+    if (!user) {
+        return <Navigate to="/" />;
+    }
+
     if (redirect) {
         return <Navigate to={redirect} />;
     }

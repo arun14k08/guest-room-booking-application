@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 import RegisterPage from "./pages/RegisterPage/RegisterPage";
 import DashBoard from "./pages/DashBoard/DashBoard";
 import AccountPage from "./pages/AccountPage/AccountPage";
+import PlaceForm from "./pages/DashBoard/components/PlaceForm";
 
 export const Router = createBrowserRouter([
     {
@@ -16,20 +17,30 @@ export const Router = createBrowserRouter([
                 element: <HomePage />,
             },
             {
-                path: "/login",
+                path: "login",
                 element: <LoginPage />,
             },
             {
-                path: "/register",
+                path: "register",
                 element: <RegisterPage />,
             },
             {
-                path: "/dashboard",
+                path: "dashboard",
                 element: <DashBoard />,
             },
             {
-                path: "/account",
+                path: "account",
                 element: <AccountPage />,
+            },
+        ],
+    },
+    {
+        path: "/places",
+        element: <MasterLayout />,
+        children: [
+            {
+                path: "new",
+                element: <PlaceForm />,
             },
         ],
     },

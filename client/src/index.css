@@ -10,8 +10,14 @@
 }
 
 input, select{
+    width: 100%;
     border: 1px solid rgb(121, 121, 121);
     padding: 4px 8px;
     border-radius: 4px;
     margin: 4px;
+}
+
+.button{
+    @apply px-4 py-2 flex gap-2 text-white rounded-full cursor-pointer justify-evenly bg-primary;
+
 }
