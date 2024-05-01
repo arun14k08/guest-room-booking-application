@@ -5,6 +5,8 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const cookieParser = require("cookie-parser");
+const cookieOptions = { sameSite: "none", secure: true };
 const jwtSecretKey = "ae7821eas5sc5zx51as4as51sdx5asd15as2x1";
 // importing schemas
 const User = require("./models/User.js");
@@ -24,6 +26,9 @@ app.use(
 // json middleware
 app.use(express.json());
 
+// cookie parser middleware
+app.use(cookieParser());
+
 // connecting with mongodb atlas
 mongoose
     .connect(process.env.MONGOOSE_CONNECTION_URI)
@@ -37,15 +42,16 @@ app.get("/", (req, res) => {
     res.json("ok");
 });
 // register a new user
-app.post("/v1/register", async (req, res) => {
-    const { name, email, phone, password, type } = req.body;
+app.post("/register", async (req, res) => {
+    const { name, email, phone, password, role } = req.body;
     // checking if there is an user with the same email
     const user = await User.findOne({ email: email });
     if (user) {
         console.log("User already exists");
-        return res
-            .status(200)
-            .json({ message: "User already exists", type: "warning" });
+        return res.status(200).json({
+            message: "User with the same email already exists",
+            type: "warning",
+        });
     }
     // if user is new then,
     // the password is hashed with bcrypt
@@ -56,7 +62,7 @@ app.post("/v1/register", async (req, res) => {
         email,
         phone,
         password: hashedPassword,
-        type,
+        role,
     });
     console.log("New user created");
     res.status(200).json({
@@ -68,10 +74,10 @@ app.post("/v1/register", async (req, res) => {
 });
 
 // login user
-app.post("/v1/login", async (req, res) => {
+app.post("/login", async (req, res) => {
     const { email, password } = req.body;
     // checking if the email is correct or not
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ email });
     if (!user) {
         return res
             .status(200)
@@ -86,20 +92,45 @@ app.post("/v1/login", async (req, res) => {
     }
     // if everything is ok then letting the user to log in
     jwt.sign(
-        { name: user.name, email: user.email },
+        { name: user.name, email: user.email, id: user._id },
         jwtSecretKey,
         {},
-        (err, token) => {
-            res.cookie("authToken", token, { sameSite: "none", secure: true })
-                .status(200)
-                .json({
-                    message: "Logged in successfully",
-                    type: "success",
-                    name: user.name,
-                    email: user.email,
-                });
+        async (err, token) => {
+            if (err) throw err;
+            const { name, email, role } = await User.findById(user.id);
+            res.cookie("authToken", token, cookieOptions).status(200).json({
+                message: "Logged in successfully",
+                type: "success",
+                user: {
+                    name,
+                    email,
+                    role,
+                },
+            });
         }
     );
+});
+
+// get profile of the user by jwt token
+app.get("/profile", (req, res) => {
+    const { authToken } = req.cookies;
+    if (!authToken) {
+        return res.status(200).json(null);
+    }
+    jwt.verify(authToken, jwtSecretKey, cookieOptions, async (err, user) => {
+        if (err) throw err;
+        const { name, email, role } = await User.findById(user.id);
+        res.status(200).json({ name, email, role });
+    });
+});
+
+// logout user
+app.post("/logout", (req, res) => {
+    res.cookie("authToken", "", {
+        sameSite: "none",
+        secure: true,
+        expires: new Date(0),
+    }).json(true);
 });
 
 // starting the server

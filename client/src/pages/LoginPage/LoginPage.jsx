@@ -1,33 +1,41 @@
 import axios from "axios";
-import React, { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import Alert from "@mui/material/Alert";
+import { UserContext } from "../../context/UserContextProvider";
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [alertMessage, setAlertMessage] = useState("");
     const [alertType, setAlertType] = useState("");
-    const [redirect, setRedirect] = useState(false);
+    const [redirect, setRedirect] = useState("");
+    const { setUser } = useContext(UserContext);
+
     const handleSubmit = (event) => {
         event.preventDefault();
         axios
-            .post("/v1/login", {
+            .post("/login", {
                 email,
                 password,
             })
-            .then(({ data: { message, type } }) => {
+            .then(({ data: { message, type, user } }) => {
                 setAlertMessage(message);
                 setAlertType(type);
+                setUser(user);
                 if (type === "success") {
                     setTimeout(() => {
-                        setRedirect(true);
-                    }, 1500);
+                        if (user.role === "customer") {
+                            setRedirect("/");
+                        } else {
+                            setRedirect("/dashboard");
+                        }
+                    }, 1000);
                 }
             });
     };
     if (redirect) {
-        return <Navigate to={"/"} />;
+        return <Navigate to={redirect} />;
     }
     return (
         <>

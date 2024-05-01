@@ -7,19 +7,19 @@ const RegisterPage = () => {
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
-    const [typeOfUser, setTypeOfUser] = useState("");
+    const [role, setRole] = useState("customer");
     const [alertMessage, setAlertMessage] = useState("");
     const [alertType, setAlertType] = useState("");
     // submitting form data to register a new user
     const handleSubmit = (event) => {
         event.preventDefault();
         axios
-            .post("/v1/register", {
+            .post("/register", {
                 name,
                 email,
                 phone,
                 password,
-                type: typeOfUser,
+                role,
             })
             .then((response) => {
                 console.log(response.data);
@@ -65,12 +65,12 @@ const RegisterPage = () => {
                     required
                 />
                 <select
-                    name="type"
+                    name="role"
                     onChange={(event) => {
-                        setTypeOfUser(event.target.value);
+                        setRole(event.target.value);
                     }}
-                    value={typeOfUser}
-                    defaultValue="owner"
+                    value={role}
+                    required
                 >
                     <option value="customer">Customer</option>
                     <option value="owner">House Owner</option>
