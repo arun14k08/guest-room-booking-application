@@ -6,6 +6,9 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const multer = require("multer");
+const fs = require("fs");
+
 const cookieOptions = { sameSite: "none", secure: true };
 const jwtSecretKey = "ae7821eas5sc5zx51as4as51sdx5asd15as2x1";
 // importing schemas
@@ -22,6 +25,8 @@ app.use(
         origin: "http://localhost:5173",
     })
 );
+
+app.use("/uploads", express.static(__dirname + "/uploads"));
 
 // json middleware
 app.use(express.json());
@@ -131,6 +136,24 @@ app.post("/logout", (req, res) => {
         secure: true,
         expires: new Date(0),
     }).json(true);
+});
+
+// upload photos of places
+// middleware for uploading photos
+const upload = multer({
+    dest: "uploads",
+});
+app.post("/upload", upload.array("photos", 100), (req, res) => {
+    const files = req.files;
+    const links = [];
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const [name, ext] = file.originalname.split(".");
+        const newName = `${file.filename}.${ext}`;
+        fs.renameSync(file.path, `uploads/${newName}`);
+        links.push(newName);
+    }
+    res.status(200).json(links);
 });
 
 // starting the server

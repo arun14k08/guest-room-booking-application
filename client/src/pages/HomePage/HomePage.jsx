@@ -3,7 +3,10 @@ import { UserContext } from "../../context/UserContextProvider";
 import { Navigate } from "react-router";
 
 const HomePage = () => {
-    const { user } = useContext(UserContext);
+    const { user, ready } = useContext(UserContext);
+    if (!ready) {
+        return "Loading...";
+    }
     if (user?.role === "owner") {
         return <Navigate to={"/dashboard"} />;
     }
