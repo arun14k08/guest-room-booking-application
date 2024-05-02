@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
-const { createSchema } = mongoose;
+const { Schema } = mongoose;
 
-const placeSchema = createSchema({
+const placeSchema = new Schema({
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
@@ -10,7 +10,7 @@ const placeSchema = createSchema({
         type: String,
         required: true,
     },
-    images: [String],
+    photos: [String],
     description: {
         type: String,
         required: true,
@@ -27,31 +27,31 @@ const placeSchema = createSchema({
         type: Number,
         required: true,
     },
-    checkIn: {
-        type: Number,
-        required: true,
-    },
-    checkOut: {
-        type: Number,
-        required: true,
-    },
-    maxGuests: {
-        type: Number,
-        required: true,
-    },
+    // checkIn: {
+    //     type: Number,
+    //     required: true,
+    // },
+    // checkOut: {
+    //     type: Number,
+    //     required: true,
+    // },
+    // maxGuests: {
+    //     type: Number,
+    //     required: true,
+    // },
     location: {
         type: String,
         required: true,
     },
-    Beds: {
+    beds: {
         type: Number,
         required: true,
     },
-    Rooms: {
+    rooms: {
         type: Number,
         required: true,
     },
-    BathRooms: {
+    bathRooms: {
         type: Number,
         required: true,
     },

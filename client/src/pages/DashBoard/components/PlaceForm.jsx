@@ -1,12 +1,20 @@
 import axios from "axios";
 import { useState } from "react";
+import { Navigate } from "react-router";
 
 const PlaceForm = () => {
     const [photos, setPhotos] = useState([]);
-    const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
-    const [location, setLocation] = useState("");
-    const [price, setPrice] = useState("");
+    const [name, setName] = useState();
+    const [description, setDescription] = useState();
+    const [location, setLocation] = useState();
+    const [price, setPrice] = useState();
+    const [minimumBooking, setMinimumBooking] = useState();
+    const [maximumBooking, setMaximumBooking] = useState();
+    const [rooms, setRooms] = useState();
+    const [beds, setBeds] = useState();
+    const [bathRooms, setBathRooms] = useState();
+    const [redirect, setRedirect] = useState();
+
     const uploadPhoto = (event) => {
         const data = new FormData();
         const files = event.target.files;
@@ -24,15 +32,51 @@ const PlaceForm = () => {
                 setPhotos((prev) => [...prev, ...fileNames]);
             });
     };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        axios
+            .post("/places/new", {
+                name,
+                description,
+                location,
+                price,
+                minimumBooking,
+                maximumBooking,
+                rooms,
+                beds,
+                bathRooms,
+                photos,
+            })
+            .then((response) => {
+                if (response.data.type === "success") {
+                    setRedirect("/dashboard");
+                }
+            });
+    };
+
+    if (redirect) {
+        return <Navigate to={redirect} />;
+    }
+
     return (
         <div>
-            <form method="post" className="px-8 py-6 flex flex-col gap-3">
+            <form
+                method="post"
+                onSubmit={(event) => {
+                    handleSubmit(event);
+                }}
+                className="px-8 py-6 flex flex-col gap-3"
+            >
                 <label htmlFor="name">
                     Name of the Place:
                     <input
                         id="name"
                         type="text"
                         placeholder="Enter your Place Name"
+                        value={name}
+                        onChange={(event) => setName(event.target.value)}
+                        required
                     />
                 </label>
                 <label htmlFor="description">
@@ -41,6 +85,9 @@ const PlaceForm = () => {
                         id="description"
                         type="text"
                         placeholder="Enter your Place Description"
+                        value={description}
+                        onChange={(event) => setDescription(event.target.value)}
+                        required
                     />
                 </label>
                 <label htmlFor="location">
@@ -48,18 +95,123 @@ const PlaceForm = () => {
                     <input
                         id="location"
                         type="text"
-                        placeholder="Enter your Place Address"
+                        placeholder="Tamil Nadu, India"
+                        value={location}
+                        onChange={(event) => setLocation(event.target.value)}
+                        required
                     />
                 </label>
                 <label htmlFor="price">
                     Price:
                     <input
                         id="price"
-                        type="text"
+                        type="number"
                         placeholder="Enter the Price"
+                        value={price}
+                        onChange={(event) => setPrice(event.target.value)}
+                        required
                     />
                 </label>
-                <p>Image:</p>
+                <div className="flex gap-8">
+                    <label htmlFor="minimumBooking">
+                        Minimum No of Booking Days:
+                        <input
+                            id="minimumBooking"
+                            type="number"
+                            placeholder="Enter the Price"
+                            value={minimumBooking}
+                            onChange={(event) =>
+                                setMinimumBooking(event.target.value)
+                            }
+                            required
+                        />
+                    </label>
+                    <label htmlFor="maximumBooking">
+                        Maximum No of Booking Days:
+                        <input
+                            id="maximumBooking"
+                            type="number"
+                            placeholder="Enter the Price"
+                            value={maximumBooking}
+                            onChange={(event) =>
+                                setMaximumBooking(event.target.value)
+                            }
+                            required
+                        />
+                    </label>
+                </div>
+                {/* <div className="flex gap-8">
+                    <label className="flex flex-col items-center">
+                        Enter the Check In Time
+                        <div className="flex w-32 items-center gap-2">
+                            <input
+                                type="number"
+                                name="checkInHour"
+                                placeholder="HH"
+                            />
+                            :
+                            <input
+                                type="text"
+                                name="checkInMinute"
+                                placeholder="MM"
+                            />
+                        </div>
+                    </label>
+                    <label className="flex flex-col items-center">
+                        Enter the Check Out Time
+                        <div className="flex w-32 items-center gap-2">
+                            <input
+                                type="text"
+                                name="checkOutHour"
+                                placeholder="HH"
+                            />
+                            :
+                            <input
+                                type="text"
+                                name="checkOutMinute"
+                                placeholder="MM"
+                            />
+                        </div>
+                    </label>
+                </div> */}
+                <div className="flex gap-4">
+                    <label htmlFor="beds">
+                        No of Beds:
+                        <input
+                            id="beds"
+                            type="number"
+                            placeholder="Enter the No of Beds"
+                            value={beds}
+                            onChange={(event) => setBeds(event.target.value)}
+                            required
+                        />
+                    </label>
+                    <label htmlFor="rooms">
+                        No of Rooms:
+                        <input
+                            id="rooms"
+                            type="number"
+                            placeholder="Enter the No of Rooms"
+                            value={rooms}
+                            onChange={(event) => setRooms(event.target.value)}
+                            required
+                        />
+                    </label>
+                    <label htmlFor="bathrooms">
+                        No of Bathrooms:
+                        <input
+                            id="bathrooms"
+                            type="number"
+                            placeholder="Enter the No of Bathrooms"
+                            value={bathRooms}
+                            onChange={(event) =>
+                                setBathRooms(event.target.value)
+                            }
+                            required
+                        />
+                    </label>
+                </div>
+                <p>Photos:</p>
                 <div className="grid grid-cols-4 lg:grid-cols-8 h-32 gap-4">
                     <label htmlFor="photo" className="cursor-pointer">
                         <div className="w-full h-full gap-4 flex justify-center items-center border-2 border-slate-500 rounded-lg">
@@ -112,7 +264,9 @@ const PlaceForm = () => {
                         </p>
                     )}
                 </div>
-                <button className="button">Add Place</button>
+                <button className="button" type="submit">
+                    Add Place
+                </button>
             </form>
         </div>
     );

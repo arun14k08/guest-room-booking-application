@@ -13,6 +13,7 @@ const cookieOptions = { sameSite: "none", secure: true };
 const jwtSecretKey = "ae7821eas5sc5zx51as4as51sdx5asd15as2x1";
 // importing schemas
 const User = require("./models/User.js");
+const Place = require("./models/Place.js");
 
 // initialize express
 const app = express();
@@ -154,6 +155,53 @@ app.post("/upload", upload.array("photos", 100), (req, res) => {
         links.push(newName);
     }
     res.status(200).json(links);
+});
+
+// add a new place
+app.post("/places/new", async (req, res) => {
+    const {
+        name,
+        description,
+        location,
+        price,
+        minimumBooking,
+        maximumBooking,
+        rooms,
+        beds,
+        bathRooms,
+        photos,
+    } = req.body;
+
+    const { authToken } = req.cookies;
+    jwt.verify(authToken, jwtSecretKey, cookieOptions, async (err, data) => {
+        if (err) throw err;
+        const { id } = data;
+        const user = await User.findById(id);
+        if (user.role !== "owner") {
+            return res.status(200).json({
+                message: "You are not authorized to add a new place",
+                type: "warning",
+            });
+        }
+        const newPlace = await Place.create({
+            owner: user._id,
+            name,
+            description,
+            location,
+            price,
+            minimumBooking,
+            maximumBooking,
+            rooms,
+            beds,
+            bathRooms,
+            photos,
+        });
+        res.status(200).json({
+            message: "Place created successfully",
+            type: "success",
+            newPlace,
+        });
+    });
 });
 
 // starting the server
