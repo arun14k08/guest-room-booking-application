@@ -1,10 +1,19 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../context/UserContextProvider";
 import { Navigate } from "react-router";
+import axios from "axios";
 
 const DashBoard = () => {
     const { user } = useContext(UserContext);
     const [redirect, setRedirect] = useState("");
+    const [places, setPlaces] = useState([]);
+
+    useEffect(() => {
+        axios.get("/listings").then((response) => {
+            setPlaces(response.data);
+        });
+    }, []);
+
     const addNewPlace = () => {
         setRedirect("/places/new");
     };
@@ -42,7 +51,48 @@ const DashBoard = () => {
                     Add a new Place
                 </button>
             </div>
-            <div>Places List</div>
+            <div className="flex flex-col gap-4">
+                {places.length > 0
+                    ? places.map((place) => {
+                          return (
+                              <div
+                                  className="flex gap-4 bg-slate-100 px-6 py-4 mx-8 my-4 rounded-lg"
+                                  key={place._id}
+                              >
+                                  <div className="w-[250px]">
+                                      <img
+                                          src={
+                                              "http://localhost:3000/uploads/" +
+                                              place.photos[0]
+                                          }
+                                          alt="thumbnail"
+                                          className="w-full rounded-lg"
+                                      />
+                                  </div>
+                                  <div className="">
+                                      <h2 className="text-[24px] font-semibold capitalize leading-8">
+                                          {place.name}
+                                      </h2>
+                                      <p className="text-[14px] font-normal">
+                                          {place.description}
+                                      </p>
+                                      <div className="flex gap-6 bg-slate-300 rounded-full mt-6 font-semibold text-[#525252] w-fit px-4">
+                                          <p className="text-[16px]">
+                                              $ {place.price}
+                                          </p>
+                                          <p className="text-[16px]">
+                                              Rooms: {place.rooms}
+                                          </p>
+                                          <p className="text-[16px]">
+                                              Beds: {place.beds}
+                                          </p>
+                                      </div>
+                                  </div>
+                              </div>
+                          );
+                      })
+                    : "No places Added"}
+            </div>
         </div>
     );
 };

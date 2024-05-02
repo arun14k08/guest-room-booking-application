@@ -1,6 +1,7 @@
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Navigate } from "react-router";
+import { UserContext } from "../../../context/UserContextProvider";
 
 const PlaceForm = () => {
     const [photos, setPhotos] = useState([]);
@@ -14,6 +15,7 @@ const PlaceForm = () => {
     const [beds, setBeds] = useState();
     const [bathRooms, setBathRooms] = useState();
     const [redirect, setRedirect] = useState();
+    const { user, ready } = useContext(UserContext);
 
     const uploadPhoto = (event) => {
         const data = new FormData();
@@ -55,6 +57,13 @@ const PlaceForm = () => {
             });
     };
 
+    if (!ready) {
+        return <p>Loading...</p>;
+    }
+    if (ready && !user) {
+        return <Navigate to="/" />;
+    }
+
     if (redirect) {
         return <Navigate to={redirect} />;
     }
@@ -66,7 +75,7 @@ const PlaceForm = () => {
                 onSubmit={(event) => {
                     handleSubmit(event);
                 }}
-                className="px-8 py-6 flex flex-col gap-3"
+                className="px-64 py-6 flex flex-col gap-3 "
             >
                 <label htmlFor="name">
                     Name of the Place:
@@ -212,7 +221,7 @@ const PlaceForm = () => {
                     </label>
                 </div>
                 <p>Photos:</p>
-                <div className="grid grid-cols-4 lg:grid-cols-8 h-32 gap-4">
+                <div className="grid grid-cols-4 lg:grid-cols-6 h-32 gap-4">
                     <label htmlFor="photo" className="cursor-pointer">
                         <div className="w-full h-full gap-4 flex justify-center items-center border-2 border-slate-500 rounded-lg">
                             <svg

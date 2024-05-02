@@ -87,14 +87,22 @@ app.post("/login", async (req, res) => {
     if (!user) {
         return res
             .status(200)
-            .json({ message: "User does not exists", type: "warning" });
+            .json({
+                message: "User does not exists",
+                type: "warning",
+                user: null,
+            });
     }
     // checking the password with the hashed password in the database
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
         return res
             .status(200)
-            .json({ message: "Incorrect password", type: "warning" });
+            .json({
+                message: "Incorrect password",
+                type: "warning",
+                user: null,
+            });
     }
     // if everything is ok then letting the user to log in
     jwt.sign(
@@ -145,16 +153,26 @@ const upload = multer({
     dest: "uploads",
 });
 app.post("/upload", upload.array("photos", 100), (req, res) => {
-    const files = req.files;
-    const links = [];
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        const [name, ext] = file.originalname.split(".");
-        const newName = `${file.filename}.${ext}`;
-        fs.renameSync(file.path, `uploads/${newName}`);
-        links.push(newName);
+    const { authToken } = req.cookies;
+    if (!authToken) {
+        return res.status(200).json({
+            message: "You are not authorized to upload photos",
+            type: "warning",
+        });
     }
-    res.status(200).json(links);
+    jwt.verify(authToken, jwtSecretKey, cookieOptions, (err, data) => {
+        if (err) throw err;
+        const files = req.files;
+        const links = [];
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const [name, ext] = file.originalname.split(".");
+            const newName = `${file.filename}.${ext}`;
+            fs.renameSync(file.path, `uploads/${newName}`);
+            links.push(newName);
+        }
+        res.status(200).json(links);
+    });
 });
 
 // add a new place
@@ -201,6 +219,25 @@ app.post("/places/new", async (req, res) => {
             type: "success",
             newPlace,
         });
+    });
+});
+
+// get all listing of the particular user
+
+app.get("/listings", (req, res) => {
+    const { authToken } = req.cookies;
+    jwt.verify(authToken, jwtSecretKey, cookieOptions, async (err, data) => {
+        if (err) throw err;
+        const { id } = data;
+        const user = await User.findById(id);
+        if (user.role !== "owner") {
+            return res.status(200).json({
+                message: "You are not authorized",
+                type: "warning",
+            });
+        }
+        const places = await Place.find({ owner: id });
+        res.status(200).json(places);
     });
 });
 
