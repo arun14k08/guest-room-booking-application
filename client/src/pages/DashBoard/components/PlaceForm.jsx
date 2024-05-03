@@ -23,7 +23,7 @@ const PlaceForm = () => {
         if (!id) {
             return;
         }
-        setSubmitText("Update Place");
+        setSubmitText("Save");
         axios.get(`/places/edit/${id}`).then((response) => {
             const { data } = response;
             setName(data.name);
@@ -267,7 +267,7 @@ const PlaceForm = () => {
                     </label>
                 </div>
                 <p>Photos:</p>
-                <div className="grid grid-cols-4 lg:grid-cols-6 h-32 gap-4">
+                <div className="grid grid-cols-4 lg:grid-cols-4 gap-4">
                     <label htmlFor="photo" className="cursor-pointer">
                         <div className="w-full h-full gap-4 flex justify-center items-center border-2 border-slate-500 rounded-lg">
                             <svg
@@ -301,13 +301,14 @@ const PlaceForm = () => {
                             return (
                                 <div
                                     key={index}
-                                    className="flex justify-center items-center w-full h-full"
+                                    className="flex justify-center items-center h-32 overflow-hidden rounded-lg"
                                 >
                                     <img
                                         src={
                                             "http://localhost:3000/uploads/" +
                                             photo
                                         }
+                                        className="rounded-lg object-cover"
                                         alt={"photo" + index}
                                     />
                                 </div>
