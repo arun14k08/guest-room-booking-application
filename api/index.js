@@ -85,24 +85,20 @@ app.post("/login", async (req, res) => {
     // checking if the email is correct or not
     const user = await User.findOne({ email });
     if (!user) {
-        return res
-            .status(200)
-            .json({
-                message: "User does not exists",
-                type: "warning",
-                user: null,
-            });
+        return res.status(200).json({
+            message: "User does not exists",
+            type: "warning",
+            user: null,
+        });
     }
     // checking the password with the hashed password in the database
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
-        return res
-            .status(200)
-            .json({
-                message: "Incorrect password",
-                type: "warning",
-                user: null,
-            });
+        return res.status(200).json({
+            message: "Incorrect password",
+            type: "warning",
+            user: null,
+        });
     }
     // if everything is ok then letting the user to log in
     jwt.sign(
@@ -223,7 +219,6 @@ app.post("/places/new", async (req, res) => {
 });
 
 // get all listing of the particular user
-
 app.get("/listings", (req, res) => {
     const { authToken } = req.cookies;
     jwt.verify(authToken, jwtSecretKey, cookieOptions, async (err, data) => {
@@ -238,6 +233,37 @@ app.get("/listings", (req, res) => {
         }
         const places = await Place.find({ owner: id });
         res.status(200).json(places);
+    });
+});
+
+// get details of a place
+
+app.get("/places/edit/:id", async (req, res) => {
+    const { id } = req.params;
+    const place = await Place.findById(id);
+    res.status(200).json(place);
+});
+
+// update details of a place
+app.put("/places/edit", async (req, res) => {
+    const { authToken } = req.cookies;
+    const placeData = req.body;
+    jwt.verify(authToken, jwtSecretKey, cookieOptions, async (err, data) => {
+        if (err) throw err;
+        const { id } = data;
+        const place = await Place.findById(placeData.id);
+        if (place.owner.toString() !== id) {
+            return res.status(200).json({
+                message: "You are not authorized to edit this place",
+                type: "warning",
+            });
+        }
+        place.set(placeData);
+        place.save();
+        res.status(200).json({
+            message: "Your place has been updated",
+            type: "success",
+        });
     });
 });
 

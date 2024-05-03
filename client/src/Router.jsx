@@ -42,6 +42,10 @@ export const Router = createBrowserRouter([
                 path: "new",
                 element: <PlaceForm />,
             },
+            {
+                path: "edit/:id",
+                element: <PlaceForm />,
+            },
         ],
     },
 ]);

@@ -1,6 +1,6 @@
 import axios from "axios";
-import { useContext, useState } from "react";
-import { Navigate } from "react-router";
+import { useContext, useEffect, useState } from "react";
+import { Navigate, useParams } from "react-router";
 import { UserContext } from "../../../context/UserContextProvider";
 
 const PlaceForm = () => {
@@ -15,7 +15,29 @@ const PlaceForm = () => {
     const [beds, setBeds] = useState();
     const [bathRooms, setBathRooms] = useState();
     const [redirect, setRedirect] = useState();
+    const [submitText, setSubmitText] = useState("Add Place");
     const { user, ready } = useContext(UserContext);
+    const { id } = useParams();
+
+    useEffect(() => {
+        if (!id) {
+            return;
+        }
+        setSubmitText("Update Place");
+        axios.get(`/places/edit/${id}`).then((response) => {
+            const { data } = response;
+            setName(data.name);
+            setDescription(data.description);
+            setPhotos(data.photos);
+            setLocation(data.location);
+            setPrice(data.price);
+            setMinimumBooking(data.minimumBooking);
+            setMaximumBooking(data.maximumBooking);
+            setRooms(data.rooms);
+            setBeds(data.beds);
+            setBathRooms(data.bathRooms);
+        });
+    }, [id]);
 
     const uploadPhoto = (event) => {
         const data = new FormData();
@@ -37,24 +59,48 @@ const PlaceForm = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        axios
-            .post("/places/new", {
-                name,
-                description,
-                location,
-                price,
-                minimumBooking,
-                maximumBooking,
-                rooms,
-                beds,
-                bathRooms,
-                photos,
-            })
-            .then((response) => {
-                if (response.data.type === "success") {
-                    setRedirect("/dashboard");
-                }
-            });
+        if (id) {
+            // update place
+            axios
+                .put("/places/edit", {
+                    id,
+                    name,
+                    description,
+                    location,
+                    price,
+                    minimumBooking,
+                    maximumBooking,
+                    rooms,
+                    beds,
+                    bathRooms,
+                    photos,
+                })
+                .then((response) => {
+                    if (response.data.type === "success") {
+                        setRedirect("/dashboard");
+                    }
+                });
+        } else {
+            // create new place
+            axios
+                .post("/places/new", {
+                    name,
+                    description,
+                    location,
+                    price,
+                    minimumBooking,
+                    maximumBooking,
+                    rooms,
+                    beds,
+                    bathRooms,
+                    photos,
+                })
+                .then((response) => {
+                    if (response.data.type === "success") {
+                        setRedirect("/dashboard");
+                    }
+                });
+        }
     };
 
     if (!ready) {
@@ -274,7 +320,7 @@ const PlaceForm = () => {
                     )}
                 </div>
                 <button className="button" type="submit">
-                    Add Place
+                    {submitText}
                 </button>
             </form>
         </div>
