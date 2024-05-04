@@ -2,7 +2,7 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { Navigate, useParams } from "react-router";
 import { UserContext } from "../../../context/UserContextProvider";
-import { UploadIcon } from "../assets/SVGAssets";
+import { DeleteIcon, UploadIcon } from "../assets/SVGAssets";
 
 const PlaceForm = () => {
     const [photos, setPhotos] = useState([]);
@@ -60,6 +60,20 @@ const PlaceForm = () => {
                 let fileNames = response.data;
                 setPhotos((prev) => [...prev, ...fileNames]);
             });
+    };
+
+    const handleDeletePhoto = (event, photo) => {
+        event.preventDefault();
+        axios.delete("/photo/" + photo).then((response) => {
+            const {
+                data: { message, type },
+            } = response;
+            setAlertMessage(message);
+            setAlertType(type);
+            setPhotos((prev) =>
+                prev.filter((prevPhoto) => prevPhoto !== photo)
+            );
+        });
     };
 
     const handleSubmit = (event) => {
@@ -303,7 +317,7 @@ const PlaceForm = () => {
                             return (
                                 <div
                                     key={index}
-                                    className="flex justify-center items-center h-32 overflow-hidden rounded-lg"
+                                    className="flex justify-center items-center h-32 overflow-hidden rounded-lg relative"
                                 >
                                     <img
                                         src={
@@ -313,6 +327,14 @@ const PlaceForm = () => {
                                         className="rounded-lg object-cover"
                                         alt={"photo" + index}
                                     />
+                                    <button
+                                        className="absolute bottom-1 right-1 rounded-full bg-slate-200"
+                                        onClick={(event) => {
+                                            handleDeletePhoto(event, photo);
+                                        }}
+                                    >
+                                        <DeleteIcon />
+                                    </button>
                                 </div>
                             );
                         })

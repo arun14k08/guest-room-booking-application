@@ -173,6 +173,28 @@ app.post("/upload", upload.array("photos", 100), (req, res) => {
     });
 });
 
+// delete a photo
+app.delete("/photo/:filename", async (req, res) => {
+    const { authToken } = req.cookies;
+    const { filename } = req.params;
+    if (!authToken) {
+        return res.status(200).json({
+            message: "You are not authorized to delete photos",
+            type: "warning",
+        });
+    }
+    jwt.verify(authToken, jwtSecretKey, cookieOptions, async (err, data) => {
+        if (err) throw err;
+        fs.unlink(`uploads/${filename}`, (err) => {
+            if (err) throw err;
+            res.status(200).json({
+                message: "Photo deleted successfully",
+                type: "success",
+            });
+        });
+    });
+});
+
 // add a new place
 app.post("/places/new", async (req, res) => {
     const {
