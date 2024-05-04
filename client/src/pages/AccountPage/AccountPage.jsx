@@ -4,10 +4,17 @@ import axios from "axios";
 import { Navigate } from "react-router";
 
 const AccountPage = () => {
-    const { user, setUser } = useContext(UserContext);
+    const {
+        user,
+        setUser,
+        alert: { setAlertType, setAlertMessage },
+    } = useContext(UserContext);
     const [redirect, setRedirect] = useState("");
     const handleLogout = () => {
-        axios.post("/logout").then(() => {
+        axios.post("/logout").then((response) => {
+            const { data } = response;
+            setAlertType(data.type);
+            setAlertMessage(data.message);
             setUser(null);
             setRedirect("/");
         });

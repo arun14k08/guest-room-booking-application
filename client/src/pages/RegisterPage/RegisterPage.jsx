@@ -1,15 +1,16 @@
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import Alert from "@mui/material/Alert";
+import { UserContext } from "../../context/UserContextProvider";
 const RegisterPage = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
     const [role, setRole] = useState("customer");
-    const [alertMessage, setAlertMessage] = useState("");
-    const [alertType, setAlertType] = useState("");
+    const {
+        alert: { setAlertMessage, setAlertType },
+    } = useContext(UserContext);
     // submitting form data to register a new user
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -30,7 +31,6 @@ const RegisterPage = () => {
     };
     return (
         <div className="flex flex-col items-center justify-center gap-2 mt-24">
-            <Alert severity={alertType}>{alertMessage}</Alert>
             <form
                 method="post"
                 onSubmit={(event) => handleSubmit(event)}

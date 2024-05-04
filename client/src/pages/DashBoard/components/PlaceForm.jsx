@@ -17,7 +17,11 @@ const PlaceForm = () => {
     const [bathRooms, setBathRooms] = useState();
     const [redirect, setRedirect] = useState();
     const [submitText, setSubmitText] = useState("Add Place");
-    const { user, ready } = useContext(UserContext);
+    const {
+        user,
+        ready,
+        alert: { setAlertMessage, setAlertType },
+    } = useContext(UserContext);
     const { id } = useParams();
 
     useEffect(() => {
@@ -77,9 +81,14 @@ const PlaceForm = () => {
                     photos,
                 })
                 .then((response) => {
-                    if (response.data.type === "success") {
-                        setRedirect("/dashboard");
-                    }
+                    const { data } = response;
+                    setAlertMessage(data.message);
+                    setAlertType(data.type);
+                    setTimeout(() => {
+                        if (data.type === "success") {
+                            setRedirect("/dashboard");
+                        }
+                    }, 1000);
                 });
         } else {
             // create new place
@@ -97,9 +106,14 @@ const PlaceForm = () => {
                     photos,
                 })
                 .then((response) => {
-                    if (response.data.type === "success") {
-                        setRedirect("/dashboard");
-                    }
+                    const { data } = response;
+                    setAlertMessage(data.message);
+                    setAlertType(data.type);
+                    setTimeout(() => {
+                        if (data.type === "success") {
+                            setRedirect("/dashboard");
+                        }
+                    }, 1000);
                 });
         }
     };

@@ -2,27 +2,46 @@ import PropTypes from "prop-types";
 import { DeleteIcon, EditIcon, RoomIcon } from "../assets/SVGAssets";
 import { BedIcon, Thumbnail } from "../assets/ImageAssets";
 import Modal from "../../../components/Modals/Modal";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import DeletePlaceModal from "./DeletePlaceModal";
 import axios from "axios";
+import { UserContext } from "../../../context/UserContextProvider";
 
-const Listings = ({ places, redirectToEditPage, setReady, setPlaces }) => {
+const Listings = ({
+    places,
+    redirectToEditPage,
+    setReady,
+    setPlaces,
+    ready,
+}) => {
     const [open, setOpen] = useState(false);
+    const {
+        alert: { setAlertMessage, setAlertType },
+    } = useContext(UserContext);
+
     const deletePlace = (id) => {
         axios.delete("/place/" + id).then((response) => {
             if (response.data.type === "success") {
-                setReady(false);
-                axios.get("/listings").then((response) => {
-                    setPlaces(response.data);
-                    setReady(true);
+                const newPlaces = places.filter((place) => {
+                    return place._id !== id;
                 });
+                setPlaces(newPlaces);
             }
+            setAlertMessage(response.data.message);
+            setAlertType(response.data.type);
         });
     };
-    if (!places) return <p>Loading...</p>;
+
+    if (!ready) {
+        return <div>Loading...</div>;
+    }
+
+    if (ready && !places) {
+        return <p>No Places Added</p>;
+    }
+
     return (
         <div>
-            
             {places?.length > 0 &&
                 places.map((place) => {
                     return (
@@ -30,8 +49,12 @@ const Listings = ({ places, redirectToEditPage, setReady, setPlaces }) => {
                             className="flex gap-4 relative  bg-slate-100 px-8 py-6 mx-8 my-4 rounded-lg"
                             key={place._id}
                         >
-                            <div className="w-[450px] max-h-[250px] rounded-lg flex flex-col justify-center overflow-hidden">
-                                <Thumbnail photo={place.photos[0]} />
+                            <div className="w-[450px] max-h-[250px] rounded-lg flex flex-col justify-center items-center overflow-hidden">
+                                {place.photos.length === 0 ? (
+                                    "No photos added"
+                                ) : (
+                                    <Thumbnail photo={place.photos[0]} />
+                                )}
                             </div>
                             <div className="w-full flex flex-col justify-between">
                                 <div className="flex w-full justify-between">
@@ -101,6 +124,7 @@ Listings.propTypes = {
         photos: PropTypes.arrayOf(PropTypes.string),
     }),
     redirectToEditPage: PropTypes.func,
+    ready: PropTypes.bool,
 };
 
 export default Listings;

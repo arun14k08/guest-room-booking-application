@@ -7,10 +7,11 @@ import { UserContext } from "../../context/UserContextProvider";
 const LoginPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [alertMessage, setAlertMessage] = useState("");
-    const [alertType, setAlertType] = useState("");
     const [redirect, setRedirect] = useState("");
-    const { setUser } = useContext(UserContext);
+    const {
+        setUser,
+        alert: { setAlertMessage, setAlertType },
+    } = useContext(UserContext);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -25,10 +26,10 @@ const LoginPage = () => {
                 setUser(user);
                 if (type === "success") {
                     setTimeout(() => {
-                        if (user.role === "customer") {
-                            setRedirect("/");
-                        } else {
+                        if (user.role === "owner") {
                             setRedirect("/dashboard");
+                        } else {
+                            setRedirect("/");
                         }
                     }, 1000);
                 }
@@ -40,7 +41,6 @@ const LoginPage = () => {
     return (
         <>
             <div className="flex flex-col gap-2 items-center justify-center mt-24">
-                <Alert severity={alertType}>{alertMessage}</Alert>
                 <form
                     method="post"
                     onSubmit={() => {

@@ -6,17 +6,22 @@ import Listings from "./components/Listings";
 import { AddIcon } from "./assets/SVGAssets";
 
 const DashBoard = () => {
-    const { user, ready, setReady } = useContext(UserContext);
+    const {
+        user,
+        ready,
+        setReady,
+        alert: { setAlertType, setAlertMessage },
+    } = useContext(UserContext);
     const [redirect, setRedirect] = useState("");
     const [places, setPlaces] = useState(null);
 
     useEffect(() => {
         setReady(false);
         axios.get("/listings").then((response) => {
-            if (!response.data) {
-                return setPlaces(null);
-            }
-            setPlaces(response.data);
+            const { data } = response;
+            setPlaces(data.places);
+            setAlertMessage(data.message);
+            setAlertType(data.type);
             setReady(true);
         });
     }, []);
@@ -54,6 +59,7 @@ const DashBoard = () => {
                 <Listings
                     places={places}
                     setPlaces={setPlaces}
+                    ready={ready}
                     setReady={setReady}
                     redirectToEditPage={redirectToEditPage}
                 />

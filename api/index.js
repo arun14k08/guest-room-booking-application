@@ -108,15 +108,17 @@ app.post("/login", async (req, res) => {
         async (err, token) => {
             if (err) throw err;
             const { name, email, role } = await User.findById(user.id);
-            res.cookie("authToken", token, cookieOptions).status(200).json({
-                message: "Logged in successfully",
-                type: "success",
-                user: {
-                    name,
-                    email,
-                    role,
-                },
-            });
+            res.cookie("authToken", token, cookieOptions)
+                .status(200)
+                .json({
+                    message: "Logged in as " + user.name,
+                    type: "success",
+                    user: {
+                        name,
+                        email,
+                        role,
+                    },
+                });
         }
     );
 });
@@ -140,7 +142,7 @@ app.post("/logout", (req, res) => {
         sameSite: "none",
         secure: true,
         expires: new Date(0),
-    }).json(true);
+    }).json({ message: "Logged out successfully", type: "success" });
 });
 
 // upload photos of places
@@ -232,7 +234,15 @@ app.get("/listings", (req, res) => {
             });
         }
         const places = await Place.find({ owner: id });
-        res.status(200).json(places);
+        if (places.length === 0) {
+            return res.status(200).json({
+                places: null,
+                message: "No places found",
+                type: "info",
+            });
+        }
+        // console.log(places);
+        res.status(200).json({ places });
     });
 });
 
@@ -278,12 +288,12 @@ app.delete("/place/:id", async (req, res) => {
         const photo = photos[i];
         fs.unlink(`uploads/${photo}`, (err) => {
             if (err) throw err;
-            console.log(photo + " deleted");
         });
-        }
+    }
     res.status(200).json({
         message: "Place deleted successfully",
         type: "success",
+        places: null,
     });
 });
 
