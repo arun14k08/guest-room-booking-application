@@ -6,13 +6,24 @@ import { useState } from "react";
 import DeletePlaceModal from "./DeletePlaceModal";
 import axios from "axios";
 
-const Listings = ({ places, redirectToEditPage }) => {
+const Listings = ({ places, redirectToEditPage, setReady, setPlaces }) => {
     const [open, setOpen] = useState(false);
-
+    const deletePlace = (id) => {
+        axios.delete("/place/" + id).then((response) => {
+            if (response.data.type === "success") {
+                setReady(false);
+                axios.get("/listings").then((response) => {
+                    setPlaces(response.data);
+                    setReady(true);
+                });
+            }
+        });
+    };
     if (!places) return <p>Loading...</p>;
     return (
-        <>
-            {places.length > 0 &&
+        <div>
+            
+            {places?.length > 0 &&
                 places.map((place) => {
                     return (
                         <div
@@ -47,6 +58,8 @@ const Listings = ({ places, redirectToEditPage }) => {
                                         <Modal open={open} setOpen={setOpen}>
                                             <DeletePlaceModal
                                                 setOpen={setOpen}
+                                                placeId={place._id}
+                                                deletePlace={deletePlace}
                                             />
                                         </Modal>
                                     </div>
@@ -74,7 +87,7 @@ const Listings = ({ places, redirectToEditPage }) => {
                         </div>
                     );
                 })}
-        </>
+        </div>
     );
 };
 

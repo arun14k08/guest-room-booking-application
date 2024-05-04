@@ -267,6 +267,26 @@ app.put("/places/edit", async (req, res) => {
     });
 });
 
+// delete a place
+app.delete("/place/:id", async (req, res) => {
+    const { id } = req.params;
+    const place = await Place.findByIdAndDelete(id);
+
+    // delete the photos of the place
+    const photos = place.photos;
+    for (let i = 0; i < photos.length; i++) {
+        const photo = photos[i];
+        fs.unlink(`uploads/${photo}`, (err) => {
+            if (err) throw err;
+            console.log(photo + " deleted");
+        });
+        }
+    res.status(200).json({
+        message: "Place deleted successfully",
+        type: "success",
+    });
+});
+
 // starting the server
 let PORT = 3000;
 app.listen(PORT, () => {

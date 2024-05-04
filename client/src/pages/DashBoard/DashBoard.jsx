@@ -8,11 +8,14 @@ import { AddIcon } from "./assets/SVGAssets";
 const DashBoard = () => {
     const { user, ready, setReady } = useContext(UserContext);
     const [redirect, setRedirect] = useState("");
-    const [places, setPlaces] = useState([]);
+    const [places, setPlaces] = useState(null);
 
     useEffect(() => {
         setReady(false);
         axios.get("/listings").then((response) => {
+            if (!response.data) {
+                return setPlaces(null);
+            }
             setPlaces(response.data);
             setReady(true);
         });
@@ -43,13 +46,15 @@ const DashBoard = () => {
                     }}
                     className="button ml-auto"
                 >
-                    <AddIcon/>
+                    <AddIcon />
                     Add a new Place
                 </button>
             </div>
             <div className="flex flex-col gap-4">
                 <Listings
                     places={places}
+                    setPlaces={setPlaces}
+                    setReady={setReady}
                     redirectToEditPage={redirectToEditPage}
                 />
             </div>

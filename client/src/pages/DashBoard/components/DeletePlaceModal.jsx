@@ -1,6 +1,6 @@
 import React from "react";
 
-const DeletePlaceModal = ({setOpen}) => {
+const DeletePlaceModal = ({ setOpen, deletePlace, placeId }) => {
     return (
         <div className="flex flex-col gap-8 mx-4 my-2">
             <p>Are you sure you want to delete this place?</p>
@@ -8,7 +8,7 @@ const DeletePlaceModal = ({setOpen}) => {
                 <button
                     className="button"
                     onClick={() => {
-                        console.log("Deleted");
+                        deletePlace(placeId);
                         setOpen(false);
                     }}
                 >
