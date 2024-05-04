@@ -1,8 +1,14 @@
 import PropTypes from "prop-types";
 import { DeleteIcon, EditIcon, RoomIcon } from "../assets/SVGAssets";
 import { BedIcon, Thumbnail } from "../assets/ImageAssets";
+import Modal from "../../../components/Modals/Modal";
+import { useState } from "react";
+import DeletePlaceModal from "./DeletePlaceModal";
+import axios from "axios";
 
 const Listings = ({ places, redirectToEditPage }) => {
+    const [open, setOpen] = useState(false);
+
     if (!places) return <p>Loading...</p>;
     return (
         <>
@@ -35,9 +41,14 @@ const Listings = ({ places, redirectToEditPage }) => {
                                         >
                                             <EditIcon />
                                         </div>
-                                        <div>
+                                        <div onClick={() => setOpen(true)}>
                                             <DeleteIcon />
                                         </div>
+                                        <Modal open={open} setOpen={setOpen}>
+                                            <DeletePlaceModal
+                                                setOpen={setOpen}
+                                            />
+                                        </Modal>
                                     </div>
                                 </div>
                                 <div className="flex ml-2 mb-2 py-4 px-6 gap-6 bg-slate-300 rounded-full mt-6 font-semibold text-[#525252] w-fit">
