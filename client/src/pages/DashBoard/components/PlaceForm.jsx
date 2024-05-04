@@ -57,8 +57,10 @@ const PlaceForm = () => {
                 },
             })
             .then((response) => {
-                let fileNames = response.data;
-                setPhotos((prev) => [...prev, ...fileNames]);
+                const { links, message, type } = response.data;
+                setAlertMessage(message);
+                setAlertType(type);
+                setPhotos((prev) => [...prev, ...links]);
             });
     };
 

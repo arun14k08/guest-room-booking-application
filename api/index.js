@@ -169,7 +169,18 @@ app.post("/upload", upload.array("photos", 100), (req, res) => {
             fs.renameSync(file.path, `uploads/${newName}`);
             links.push(newName);
         }
-        res.status(200).json(links);
+        let message = "";
+        if (links.length === 1) {
+            message = "Photo Uploaded successfully";
+        } else {
+            message = "Photos Uploaded successfully";
+        }
+
+        res.status(200).json({
+            links,
+            message: message,
+            type: "success",
+        });
     });
 });
 
