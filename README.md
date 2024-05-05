@@ -1,5 +1,5 @@
 # Guest Room Booking Application
-A web application in which, house owners can list their rentals and customers can book those rentals.
+A web application in which, house owners can list their rentals and customers can book them.
 
 ## TODO LIST
 
@@ -18,6 +18,6 @@ A web application in which, house owners can list their rentals and customers ca
     - [x] Create a Rental Listing 
         - [x] add required data
         - [x] add photos
-    - [ ] edit a Rental Listing 
-    - [ ] delete a Rental Listing 
+    - [x] edit a Rental Listing 
+    - [x] delete a Rental Listing 
     - [ ] Rental report page
