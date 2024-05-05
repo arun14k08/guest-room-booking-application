@@ -2,6 +2,8 @@ import { useContext, useState } from "react";
 import { UserContext } from "../../context/UserContextProvider";
 import axios from "axios";
 import { Navigate } from "react-router";
+import Modal from "../../components/Modals/Modal";
+import LogoutModal from "./components/LogoutModal";
 
 const AccountPage = () => {
     const {
@@ -9,7 +11,10 @@ const AccountPage = () => {
         setUser,
         alert: { setAlertType, setAlertMessage },
     } = useContext(UserContext);
+
     const [redirect, setRedirect] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     const handleLogout = () => {
         axios.post("/logout").then((response) => {
             const { data } = response;
@@ -33,12 +38,17 @@ const AccountPage = () => {
             {`Welcome  ${user?.name}`}
             <button
                 onClick={() => {
-                    handleLogout();
+                    setIsModalOpen(true);
                 }}
                 className="px-4 py-2 text-white rounded-lg cursor-pointer h-fit bg-primary mx-auto"
             >
                 Logout
             </button>
+            <Modal open={isModalOpen} setOpen={setIsModalOpen}>
+                <div>
+                    <LogoutModal setIsModalOpen={setIsModalOpen} handleLogout={handleLogout} />
+                </div>
+            </Modal>
         </div>
     );
 };
