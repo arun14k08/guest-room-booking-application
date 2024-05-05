@@ -330,6 +330,12 @@ app.delete("/place/:id", async (req, res) => {
     });
 });
 
+// get all places
+app.get("/places", async (req, res) => {
+    const places = await Place.find({});
+    res.status(200).json({places});
+});
+
 // starting the server
 let PORT = 3000;
 app.listen(PORT, () => {
