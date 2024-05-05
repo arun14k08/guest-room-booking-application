@@ -1,6 +1,6 @@
 import React from "react";
 
-const DeletePlaceModal = ({ setOpen, deletePlace, placeId }) => {
+const DeletePlaceModal = ({ setIsModalOpen, deletePlace, placeId }) => {
     return (
         <div className="flex flex-col gap-8 mx-4 my-2">
             <p>Are you sure you want to delete this place?</p>
@@ -9,7 +9,7 @@ const DeletePlaceModal = ({ setOpen, deletePlace, placeId }) => {
                     className="button"
                     onClick={() => {
                         deletePlace(placeId);
-                        setOpen(false);
+                        setIsModalOpen(false);
                     }}
                 >
                     Delete
@@ -17,7 +17,7 @@ const DeletePlaceModal = ({ setOpen, deletePlace, placeId }) => {
                 <button
                     className="bg-white ring-1 ring-slate-300 px-4 py-2 rounded-lg"
                     onClick={() => {
-                        setOpen(false);
+                        setIsModalOpen(false);
                     }}
                 >
                     Cancel

@@ -14,7 +14,7 @@ const Listings = ({
     setPlaces,
     ready,
 }) => {
-    const [open, setOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const {
         alert: { setAlertMessage, setAlertType },
     } = useContext(UserContext);
@@ -75,12 +75,17 @@ const Listings = ({
                                         >
                                             <EditIcon />
                                         </div>
-                                        <div onClick={() => setOpen(true)}>
+                                        <div
+                                            onClick={() => setIsModalOpen(true)}
+                                        >
                                             <DeleteIcon />
                                         </div>
-                                        <Modal open={open} setOpen={setOpen}>
+                                        <Modal
+                                            open={isModalOpen}
+                                            setOpen={setIsModalOpen}
+                                        >
                                             <DeletePlaceModal
-                                                setOpen={setOpen}
+                                                setIsModalOpen={setIsModalOpen}
                                                 placeId={place._id}
                                                 deletePlace={deletePlace}
                                             />
