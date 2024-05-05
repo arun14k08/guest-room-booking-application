@@ -3,7 +3,7 @@ import React from "react";
 const LogoutModal = ({ setIsModalOpen, handleLogout }) => {
     return (
         <div className="flex flex-col gap-8 mx-4 my-2">
-            <p className="text-center">Are you sure to logout?</p>
+            <p className="text-center">Are you certain you want to log out?</p>
             <div className="flex gap-4 justify-center">
                 <button
                     className="button"
