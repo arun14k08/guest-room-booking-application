@@ -6,6 +6,7 @@ import RegisterPage from "./pages/RegisterPage/RegisterPage";
 import DashBoard from "./pages/DashBoard/DashBoard";
 import AccountPage from "./pages/AccountPage/AccountPage";
 import PlaceForm from "./pages/DashBoard/components/PlaceForm";
+import PlacePage from "./pages/PlacePage/PlacePage";
 
 export const Router = createBrowserRouter([
     {
@@ -46,6 +47,10 @@ export const Router = createBrowserRouter([
                 path: "edit/:id",
                 element: <PlaceForm />,
             },
+            {
+                path:":id",
+                element: <PlacePage />
+            }
         ],
     },
 ]);
