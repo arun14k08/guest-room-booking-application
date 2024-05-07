@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { LocationIcon } from "../assets/SVGAssets";
+import { LocationIcon } from "../../../assets/SVGAssets";
 import { useState } from "react";
 import { Navigate } from "react-router";
 

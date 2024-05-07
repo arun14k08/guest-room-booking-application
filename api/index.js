@@ -336,6 +336,13 @@ app.get("/places", async (req, res) => {
     res.status(200).json({ places });
 });
 
+// get details of a place
+app.get("/places/:id", async (req, res) => {
+    const { id } = req.params;
+    const place = await Place.findById(id);
+    res.status(200).json({place});
+});
+
 // starting the server
 let PORT = 3000;
 app.listen(PORT, () => {

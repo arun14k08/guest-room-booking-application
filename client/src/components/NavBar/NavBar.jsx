@@ -12,7 +12,7 @@ const NavBar = () => {
     const { user, ready } = useContext(UserContext);
 
     return (
-        <header className="relative flex items-center justify-between gap-4 ">
+        <header className="relative flex items-center justify-between gap-4 pb-3 border-b-[1px] border-slate-300 mb-8">
             <Link to={"/"} className="flex justify-between gap-2 p-2">
                 <BrandLogo />
                 <p className="text-[32px] font-semibold font-dance">

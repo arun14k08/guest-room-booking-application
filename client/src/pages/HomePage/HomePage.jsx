@@ -23,7 +23,7 @@ const HomePage = () => {
         return <Navigate to={"/dashboard"} />;
     }
     return (
-        <div className="my-8 px-16 py-4 bg-slate-200 -mx-8">
+        <div className="px-16 py-4 -mx-8">
             <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {places.map((place) => {
                     return (
