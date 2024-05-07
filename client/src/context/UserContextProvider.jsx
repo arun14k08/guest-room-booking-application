@@ -35,7 +35,9 @@ const UserContextProvider = ({ children }) => {
         >
             <div className="fixed rounded-lg top-24 right-8 shadow-xl overflow-hidden z-10">
                 {alertMessage ? (
-                    <Alert severity={alertType}> {alertMessage} </Alert>
+                    <Alert variant="filled" severity={alertType}>
+                        {alertMessage}
+                    </Alert>
                 ) : null}
             </div>
             {children}
