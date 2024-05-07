@@ -10,7 +10,7 @@ const multer = require("multer");
 const fs = require("fs");
 
 const cookieOptions = { sameSite: "none", secure: true };
-const jwtSecretKey = "ae7821eas5sc5zx51as4as51sdx5asd15as2x1";
+const jwtSecretKey = process.env.JWT_SECRET_KEY;
 // importing schemas
 const User = require("./models/User.js");
 const Place = require("./models/Place.js");
@@ -200,7 +200,7 @@ app.delete("/photo/:filename", async (req, res) => {
             if (err) throw err;
             res.status(200).json({
                 message: "Photo deleted successfully",
-                type: "success",
+                type: "warning",
             });
         });
     });
@@ -325,7 +325,7 @@ app.delete("/place/:id", async (req, res) => {
     }
     res.status(200).json({
         message: "Place deleted successfully",
-        type: "success",
+        type: "warning",
         places: null,
     });
 });
@@ -333,7 +333,7 @@ app.delete("/place/:id", async (req, res) => {
 // get all places
 app.get("/places", async (req, res) => {
     const places = await Place.find({});
-    res.status(200).json({places});
+    res.status(200).json({ places });
 });
 
 // starting the server
