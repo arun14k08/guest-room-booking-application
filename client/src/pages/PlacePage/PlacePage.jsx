@@ -4,6 +4,10 @@ import { useParams } from "react-router";
 import { LocationIcon } from "../../assets/SVGAssets";
 import PhotoPreview from "./components/PhotoPreview";
 import Calendar from "./components/Calendar";
+import { DateRangeCalendar } from "@mui/x-date-pickers-pro/DateRangeCalendar";
+import dayjs from "dayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers-pro";
+import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
 
 const PlacePage = () => {
     const { id } = useParams();
