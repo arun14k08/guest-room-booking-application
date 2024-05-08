@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { LocationIcon } from "../../assets/SVGAssets";
 import PhotoPreview from "./components/PhotoPreview";
+import Calendar from "./components/Calendar";
 
 const PlacePage = () => {
     const { id } = useParams();
@@ -26,6 +27,21 @@ const PlacePage = () => {
                 </p>
                 {/* image gallery */}
                 {place && <PhotoPreview photos={place.photos} />}
+            </div>
+            <div className="flex gap-8 justify-between mt-8">
+                <div className="mb-96">
+                    <div>More Details</div>
+                    <div>
+                        {/*Availability  Calendar */}
+                        <Calendar />
+                    </div>
+                </div>
+                <div>
+                    <form method="post">
+                        <input type="date" name="from" id="" />
+                        <input type="date" name="to" id="" />
+                    </form>
+                </div>
             </div>
         </div>
     );
