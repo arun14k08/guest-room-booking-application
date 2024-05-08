@@ -4,14 +4,12 @@ import { useParams } from "react-router";
 import { LocationIcon } from "../../assets/SVGAssets";
 import PhotoPreview from "./components/PhotoPreview";
 import Calendar from "./components/Calendar";
-import { DateRangeCalendar } from "@mui/x-date-pickers-pro/DateRangeCalendar";
-import dayjs from "dayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers-pro";
-import { AdapterDayjs } from "@mui/x-date-pickers-pro/AdapterDayjs";
 
 const PlacePage = () => {
     const { id } = useParams();
     const [place, setPlace] = useState();
+    const [fromDate, setFromDate] = useState();
+    const [toDate, setToDate] = useState();
 
     useEffect(() => {
         if (!id) {
@@ -37,13 +35,18 @@ const PlacePage = () => {
                     <div>More Details</div>
                     <div>
                         {/*Availability  Calendar */}
-                        <Calendar />
+                        <Calendar
+                            fromDate={fromDate}
+                            setFromDate={setFromDate}
+                            toDate={toDate}
+                            setToDate={setToDate}
+                        />
                     </div>
                 </div>
                 <div>
                     <form method="post">
-                        <input type="date" name="from" id="" />
-                        <input type="date" name="to" id="" />
+                        {/* <p>{fromDate?.toISOString().split("T")[0]}</p>
+                        <p>{toDate?.toISOString().split("T")[0]}</p> */}
                     </form>
                 </div>
             </div>

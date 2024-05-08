@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { days, months } from "../lib/calendar";
 import { LeftIcon, RightIcon } from "../assets/SVGAssets";
+import { format } from "date-fns";
 
-const Calendar = () => {
+const Calendar = ({ fromDate, toDate, setFromDate, setToDate }) => {
     const [month, setMonth] = useState(new Date().getMonth() + 1);
     const [year, setYear] = useState(new Date().getFullYear());
-    const [date, setDate] = useState(new Date().getDate());
     const [blankDays, setBlankDays] = useState(
         new Date(year, month - 1, 1).getDay() % 7
     );
@@ -39,6 +39,21 @@ const Calendar = () => {
     const setDays = (month, year) => {
         setBlankDays(new Date(year, month - 1, 1).getDay());
         setNumberOfDays(new Date(year, month, 0).getDate());
+    };
+
+    const handleDateSelect = ({ day, month, year, event }) => {
+        const formattedDate = format(
+            new Date(year, month - 1, day),
+            "yyyy-MM-dd"
+        );
+        if (!fromDate) {
+            setFromDate(formattedDate);
+            return;
+        }
+
+        if (!toDate) {
+            setToDate(formattedDate);
+        }
     };
 
     return (
@@ -85,6 +100,7 @@ const Calendar = () => {
                     );
                 })}
                 {[...Array(numberOfDays)].map((value, index) => {
+                    // past dates disabled by default
                     if (new Date(year, month - 1, index + 1) < new Date()) {
                         return (
                             <p
@@ -95,11 +111,60 @@ const Calendar = () => {
                             </p>
                         );
                     }
+
+                    // highlight the range of dates
+
+                    // check in and check out date
+                    if (
+                        format(
+                            new Date(year, month - 1, index + 1),
+                            "yyyy-MM-dd"
+                        ) === fromDate ||
+                        format(
+                            new Date(year, month - 1, index + 1),
+                            "yyyy-MM-dd"
+                        ) === toDate
+                    ) {
+                        return (
+                            <p
+                                key={index}
+                                className="py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full bg-black text-white "
+                            >
+                                {index + 1}
+                            </p>
+                        );
+                    }
+
+                    // between dates
+                    if (
+                        new Date(fromDate) <
+                            new Date(year, month - 1, index + 2) &&
+                        new Date(year, month - 1, index + 1) < new Date(toDate)
+                    ) {
+                        return (
+                            <p
+                                key={index}
+                                className="py-3 flex transition-all  justify-center items-center cursor-pointer -mx-2 bg-slate-400"
+                            >
+                                {index + 1}
+                            </p>
+                        );
+                    }
+
+                    // future dates
                     return (
                         <>
                             <p
                                 key={index}
-                                className="py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full hover:bg-slate-200 ring-black"
+                                className="py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full hover:bg-slate-200  hover:ring-1 hover:ring-black"
+                                onClick={(event) => {
+                                    handleDateSelect({
+                                        day: index + 1,
+                                        month,
+                                        year,
+                                        event,
+                                    });
+                                }}
                             >
                                 {index + 1}
                             </p>
@@ -107,6 +172,15 @@ const Calendar = () => {
                     );
                 })}
             </div>
+            <button
+                onClick={() => {
+                    setFromDate(null);
+                    setToDate(null);
+                }}
+                className="underline font-semibold mt-2 hover:bg-slate-200 rounded-lg px-2 py-1"
+            >
+                Clear Dates
+            </button>
         </div>
     );
 };

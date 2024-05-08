@@ -10,7 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/styled": "^11.11.5",
+    "@mui/material": "^5.15.17",
+    "@mui/styled-engine": "^5.15.14",
     "axios": "^1.6.8",
+    "date-fns": "^3.6.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router": "^6.23.0",

@@ -1,7 +1,6 @@
 import axios from "axios";
 import { useContext, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
-import Alert from "@mui/material/Alert";
 import { UserContext } from "../../context/UserContextProvider";
 
 const LoginPage = () => {
