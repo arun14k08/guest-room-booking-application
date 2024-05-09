@@ -22,6 +22,7 @@ const Calendar = ({
     const [numberOfDays, setNumberOfDays] = useState(
         new Date(year, month, 0).getDate()
     );
+    const [maximumDateToCheckOut, setMaximumDateToCheckOut] = useState();
 
     const handleRightClick = () => {
         const nextMonth = month === 12 ? 1 : month + 1;
@@ -59,6 +60,17 @@ const Calendar = ({
 
         if (!checkInDate) {
             setCheckInDate(formattedDate);
+            // set maximum date that can be selected
+            if (!maximumDateToCheckOut) {
+                let maxDate = new Date(
+                    year,
+                    month - 1,
+                    day + maximumBookingDays
+                );
+                setMaximumDateToCheckOut(format(maxDate, "yyyy-MM-dd"));
+            }
+
+            // select minimum date to check out by default
             const minimumDateToCheckOut = format(
                 new Date(year, month - 1, day + minimumBookingDays),
                 "yyyy-MM-dd"
@@ -73,7 +85,16 @@ const Calendar = ({
         }
 
         if (new Date(formattedDate) < new Date(checkInDate)) {
+            let maxDate = new Date(
+                year,
+                month - 1,
+                new Date(formattedDate).getDate() + maximumBookingDays
+            );
+            setMaximumDateToCheckOut(format(maxDate, "yyyy-MM-dd"));
             setCheckInDate(formattedDate);
+            if (maxDate < new Date(checkOutDate)) {
+                setCheckOutDate(format(maxDate, "yyyy-MM-dd"));
+            }
             let minimumDateToCheckOut = "";
             if (!checkOutDate) {
                 minimumDateToCheckOut = format(
@@ -83,18 +104,9 @@ const Calendar = ({
                 setCheckOutDate(minimumDateToCheckOut);
             }
             const days =
-                (new Date(checkOutDate || minimumDateToCheckOut) -
+                (new Date(checkOutDate || minimumDateToCheckOut || maxDate) -
                     new Date(formattedDate)) /
                 86400000;
-            setTotalDays(days);
-            setTotalPrice(days * price);
-            return;
-        }
-
-        if (!checkOutDate) {
-            setCheckOutDate(formattedDate);
-            const days =
-                (new Date(formattedDate) - new Date(checkInDate)) / 86400000;
             setTotalDays(days);
             setTotalPrice(days * price);
             return;
@@ -225,6 +237,21 @@ const Calendar = ({
                     }
 
                     // between dates
+
+                    if (
+                        maximumDateToCheckOut &&
+                        new Date(maximumDateToCheckOut) <
+                            new Date(year, month - 1, index + 1)
+                    ) {
+                        return (
+                            <p
+                                key={index}
+                                className="py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full ring-black"
+                            >
+                                <s className="text-slate-300">{index + 1}</s>
+                            </p>
+                        );
+                    }
                     if (
                         new Date(checkInDate) <
                             new Date(year, month - 1, index + 2) &&
@@ -266,6 +293,7 @@ const Calendar = ({
                 onClick={(event) => {
                     setCheckInDate("");
                     setCheckOutDate("");
+                    setMaximumDateToCheckOut("");
                     event.preventDefault();
                 }}
                 className="underline font-semibold mt-2 hover:bg-slate-200 rounded-lg px-2 py-1"
