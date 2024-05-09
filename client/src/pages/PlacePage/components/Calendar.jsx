@@ -11,6 +11,8 @@ const Calendar = ({
     setTotalDays,
     setTotalPrice,
     price,
+    minimumBookingDays,
+    maximumBookingDays,
 }) => {
     const [month, setMonth] = useState(new Date().getMonth() + 1);
     const [year, setYear] = useState(new Date().getFullYear());
@@ -54,20 +56,38 @@ const Calendar = ({
             new Date(year, month - 1, day),
             "yyyy-MM-dd"
         );
+
         if (!checkInDate) {
             setCheckInDate(formattedDate);
+            const minimumDateToCheckOut = format(
+                new Date(year, month - 1, day + minimumBookingDays),
+                "yyyy-MM-dd"
+            );
+            setCheckOutDate(minimumDateToCheckOut);
+            const days =
+                (new Date(minimumDateToCheckOut) - new Date(formattedDate)) /
+                86400000;
+            setTotalDays(days);
+            setTotalPrice(days * price);
             return;
         }
 
         if (new Date(formattedDate) < new Date(checkInDate)) {
             setCheckInDate(formattedDate);
-            if (checkOutDate) {
-                const days =
-                    (new Date(checkOutDate) - new Date(formattedDate)) /
-                    86400000;
-                setTotalDays(days);
-                setTotalPrice(days * price);
+            let minimumDateToCheckOut = "";
+            if (!checkOutDate) {
+                minimumDateToCheckOut = format(
+                    new Date(year, month - 1, day + minimumBookingDays),
+                    "yyyy-MM-dd"
+                );
+                setCheckOutDate(minimumDateToCheckOut);
             }
+            const days =
+                (new Date(checkOutDate || minimumDateToCheckOut) -
+                    new Date(formattedDate)) /
+                86400000;
+            setTotalDays(days);
+            setTotalPrice(days * price);
             return;
         }
 

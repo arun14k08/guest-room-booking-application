@@ -84,6 +84,8 @@ const PlacePage = () => {
                                 setTotalDays={setTotalDays}
                                 setTotalPrice={setTotalPrice}
                                 price={place?.price}
+                                minimumBookingDays={place?.minimumBooking}
+                                maximumBookingDays={place?.maximumBooking}
                             />
                         </div>
                         <div
