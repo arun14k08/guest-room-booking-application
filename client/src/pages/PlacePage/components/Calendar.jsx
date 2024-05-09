@@ -8,6 +8,9 @@ const Calendar = ({
     checkOutDate,
     setCheckInDate,
     setCheckOutDate,
+    setTotalDays,
+    setTotalPrice,
+    price,
 }) => {
     const [month, setMonth] = useState(new Date().getMonth() + 1);
     const [year, setYear] = useState(new Date().getFullYear());
@@ -58,21 +61,31 @@ const Calendar = ({
 
         if (new Date(formattedDate) < new Date(checkInDate)) {
             setCheckInDate(formattedDate);
+            if (checkOutDate) {
+                const days =
+                    (new Date(checkOutDate) - new Date(formattedDate)) /
+                    86400000;
+                setTotalDays(days);
+                setTotalPrice(days * price);
+            }
             return;
         }
 
         if (!checkOutDate) {
             setCheckOutDate(formattedDate);
-            return;
-        }
-
-        if (formattedDate < checkInDate) {
-            setCheckInDate(formattedDate);
+            const days =
+                (new Date(formattedDate) - new Date(checkInDate)) / 86400000;
+            setTotalDays(days);
+            setTotalPrice(days * price);
             return;
         }
 
         if (formattedDate > checkOutDate) {
             setCheckOutDate(formattedDate);
+            const days =
+                (new Date(formattedDate) - new Date(checkInDate)) / 86400000;
+            setTotalDays(days);
+            setTotalPrice(days * price);
             return;
         }
     };
@@ -82,7 +95,8 @@ const Calendar = ({
             <div className="flex gap-3 justify-between items-center py-2 px-4 transition-all">
                 <button
                     className="rounded-full p-2 hover:bg-slate-200 cursor-pointer"
-                    onClick={() => {
+                    onClick={(event) => {
+                        event.preventDefault();
                         handleLeftClick();
                     }}
                 >
@@ -98,7 +112,8 @@ const Calendar = ({
                 </div>
                 <button
                     className="rounded-full p-2 hover:bg-slate-200 cursor-pointer"
-                    onClick={() => {
+                    onClick={(event) => {
+                        event.preventDefault();
                         handleRightClick();
                     }}
                 >
@@ -199,7 +214,7 @@ const Calendar = ({
                         return (
                             <p
                                 key={index}
-                                className="py-3 flex transition-all  justify-center items-center cursor-pointer -mx-2 bg-slate-400"
+                                className="py-3 flex transition-all  justify-center items-center cursor-pointer -mx-2 bg-slate-400 text-white"
                             >
                                 {index + 1}
                             </p>
@@ -209,10 +224,11 @@ const Calendar = ({
                     // selectable dates
                     return (
                         <>
-                            <p
+                            <button
                                 key={index}
                                 className="py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full hover:bg-slate-200  hover:ring-1 hover:ring-black"
-                                onClick={() => {
+                                onClick={(event) => {
+                                    event.preventDefault();
                                     handleDateSelect({
                                         day: index + 1,
                                         month,
@@ -221,15 +237,16 @@ const Calendar = ({
                                 }}
                             >
                                 {index + 1}
-                            </p>
+                            </button>
                         </>
                     );
                 })}
             </div>
             <button
-                onClick={() => {
+                onClick={(event) => {
                     setCheckInDate("");
                     setCheckOutDate("");
+                    event.preventDefault();
                 }}
                 className="underline font-semibold mt-2 hover:bg-slate-200 rounded-lg px-2 py-1"
             >

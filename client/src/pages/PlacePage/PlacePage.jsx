@@ -11,10 +11,12 @@ const PlacePage = () => {
     const [place, setPlace] = useState();
     const [checkInDate, setCheckInDate] = useState("");
     const [checkOutDate, setCheckOutDate] = useState("");
-    const [isCheckInDateValid, setIsCheckInDateValid] = useState();
-    const {
-        alert: { setAlertMessage, setAlertType },
-    } = useContext(UserContext);
+    const [totalDays, setTotalDays] = useState();
+    const [totalPrice, setTotalPrice] = useState();
+    // const [isCheckInDateValid, setIsCheckInDateValid] = useState();
+    // const {
+    //     alert: { setAlertMessage, setAlertType },
+    // } = useContext(UserContext);
     useEffect(() => {
         if (!id) {
             return;
@@ -39,7 +41,7 @@ const PlacePage = () => {
                     <div>More Details</div>
                 </div>
                 <div>
-                    <form method="post">
+                    <form method="post" className="flex flex-col gap-4">
                         <div className="flex gap-4">
                             <label htmlFor="check-in">
                                 Check In:
@@ -53,6 +55,7 @@ const PlacePage = () => {
                                     onChange={(event) => {
                                         setCheckInDate(event.target.value);
                                     }}
+                                    required
                                 />
                             </label>
                             <label htmlFor="checkout">
@@ -67,6 +70,7 @@ const PlacePage = () => {
                                     onChange={(event) => {
                                         setCheckOutDate(event.target.value);
                                     }}
+                                    required
                                 />
                             </label>
                         </div>
@@ -77,8 +81,31 @@ const PlacePage = () => {
                                 setCheckInDate={setCheckInDate}
                                 checkOutDate={checkOutDate}
                                 setCheckOutDate={setCheckOutDate}
+                                setTotalDays={setTotalDays}
+                                setTotalPrice={setTotalPrice}
+                                price={place?.price}
                             />
                         </div>
+                        <div
+                            className={`${checkOutDate ? "visible" : "hidden"}`}
+                        >
+                            <label htmlFor="guests">
+                                No of Guests:
+                                <input
+                                    id="guests"
+                                    type="number"
+                                    name="guests"
+                                    placeholder="Enter the No of Guests"
+                                    required
+                                />
+                            </label>
+                            <p className="font-bold text-xl ">{`₹ ${totalPrice} for ${totalDays} ${
+                                totalDays === 1 ? "night" : "nights"
+                            }`}</p>
+                        </div>
+                        <button className="button" type="submit">
+                            Book
+                        </button>
                     </form>
                 </div>
             </div>
