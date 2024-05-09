@@ -3,7 +3,12 @@ import { days, months } from "../lib/calendar";
 import { LeftIcon, RightIcon } from "../assets/SVGAssets";
 import { format } from "date-fns";
 
-const Calendar = ({ fromDate, toDate, setFromDate, setToDate }) => {
+const Calendar = ({
+    checkInDate,
+    checkOutDate,
+    setCheckInDate,
+    setCheckOutDate,
+}) => {
     const [month, setMonth] = useState(new Date().getMonth() + 1);
     const [year, setYear] = useState(new Date().getFullYear());
     const [blankDays, setBlankDays] = useState(
@@ -41,18 +46,34 @@ const Calendar = ({ fromDate, toDate, setFromDate, setToDate }) => {
         setNumberOfDays(new Date(year, month, 0).getDate());
     };
 
-    const handleDateSelect = ({ day, month, year, event }) => {
+    const handleDateSelect = ({ day, month, year }) => {
         const formattedDate = format(
             new Date(year, month - 1, day),
             "yyyy-MM-dd"
         );
-        if (!fromDate) {
-            setFromDate(formattedDate);
+        if (!checkInDate) {
+            setCheckInDate(formattedDate);
             return;
         }
 
-        if (!toDate) {
-            setToDate(formattedDate);
+        if (new Date(formattedDate) < new Date(checkInDate)) {
+            setCheckInDate(formattedDate);
+            return;
+        }
+
+        if (!checkOutDate) {
+            setCheckOutDate(formattedDate);
+            return;
+        }
+
+        if (formattedDate < checkInDate) {
+            setCheckInDate(formattedDate);
+            return;
+        }
+
+        if (formattedDate > checkOutDate) {
+            setCheckOutDate(formattedDate);
+            return;
         }
     };
 
@@ -114,21 +135,54 @@ const Calendar = ({ fromDate, toDate, setFromDate, setToDate }) => {
 
                     // highlight the range of dates
 
-                    // check in and check out date
+                    // check in date without checkOutDate selected
                     if (
                         format(
                             new Date(year, month - 1, index + 1),
                             "yyyy-MM-dd"
-                        ) === fromDate ||
-                        format(
-                            new Date(year, month - 1, index + 1),
-                            "yyyy-MM-dd"
-                        ) === toDate
+                        ) === checkInDate &&
+                        checkOutDate
                     ) {
                         return (
                             <p
                                 key={index}
-                                className="py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full bg-black text-white "
+                                className="py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full rounded-r-none bg-black text-white bg-gradient-to-r from-black to-slate-400"
+                            >
+                                {index + 1}
+                            </p>
+                        );
+                    }
+
+                    // check in date with checkOutDate selected
+
+                    // check in date
+                    if (
+                        format(
+                            new Date(year, month - 1, index + 1),
+                            "yyyy-MM-dd"
+                        ) === checkInDate
+                    ) {
+                        return (
+                            <p
+                                key={index}
+                                className="py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full bg-black text-white"
+                            >
+                                {index + 1}
+                            </p>
+                        );
+                    }
+
+                    // check out date
+                    if (
+                        format(
+                            new Date(year, month - 1, index + 1),
+                            "yyyy-MM-dd"
+                        ) === checkOutDate
+                    ) {
+                        return (
+                            <p
+                                key={index}
+                                className="py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full bg-gradient-to-l from-black to-slate-400 text-white rounded-l-none"
                             >
                                 {index + 1}
                             </p>
@@ -137,9 +191,10 @@ const Calendar = ({ fromDate, toDate, setFromDate, setToDate }) => {
 
                     // between dates
                     if (
-                        new Date(fromDate) <
+                        new Date(checkInDate) <
                             new Date(year, month - 1, index + 2) &&
-                        new Date(year, month - 1, index + 1) < new Date(toDate)
+                        new Date(year, month - 1, index + 1) <
+                            new Date(checkOutDate)
                     ) {
                         return (
                             <p
@@ -151,18 +206,17 @@ const Calendar = ({ fromDate, toDate, setFromDate, setToDate }) => {
                         );
                     }
 
-                    // future dates
+                    // selectable dates
                     return (
                         <>
                             <p
                                 key={index}
                                 className="py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full hover:bg-slate-200  hover:ring-1 hover:ring-black"
-                                onClick={(event) => {
+                                onClick={() => {
                                     handleDateSelect({
                                         day: index + 1,
                                         month,
                                         year,
-                                        event,
                                     });
                                 }}
                             >
@@ -174,8 +228,8 @@ const Calendar = ({ fromDate, toDate, setFromDate, setToDate }) => {
             </div>
             <button
                 onClick={() => {
-                    setFromDate(null);
-                    setToDate(null);
+                    setCheckInDate("");
+                    setCheckOutDate("");
                 }}
                 className="underline font-semibold mt-2 hover:bg-slate-200 rounded-lg px-2 py-1"
             >
