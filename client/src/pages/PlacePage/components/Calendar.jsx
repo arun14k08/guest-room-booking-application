@@ -90,7 +90,7 @@ const Calendar = ({
             setCheckOutDate(minimumCheckOut);
             return;
         }
-
+        // selecting a date after the current checkout date
         if (date > parseISO(checkOutDate)) {
             setCheckOutDate(formattedDate);
             return;

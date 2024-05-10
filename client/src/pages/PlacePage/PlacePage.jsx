@@ -4,7 +4,7 @@ import { useParams } from "react-router";
 import { LocationIcon } from "../../assets/SVGAssets";
 import PhotoPreview from "./components/PhotoPreview";
 import Calendar from "./components/Calendar";
-import { UserContext } from "../../context/UserContextProvider";
+// import { UserContext } from "../../context/UserContextProvider";
 import { format } from "date-fns";
 const PlacePage = () => {
     const { id } = useParams();
@@ -13,6 +13,7 @@ const PlacePage = () => {
     const [checkOutDate, setCheckOutDate] = useState("");
     const [totalDays, setTotalDays] = useState();
     const [totalPrice, setTotalPrice] = useState();
+    const [guests, setGuests] = useState();
     // const [isCheckInDateValid, setIsCheckInDateValid] = useState();
     // const {
     //     alert: { setAlertMessage, setAlertType },
@@ -92,13 +93,20 @@ const PlacePage = () => {
                             className={`${checkOutDate ? "visible" : "hidden"}`}
                         >
                             <label htmlFor="guests">
-                                No of Guests:
+                                No of Guests: <b>(Max- {place?.maxGuests})</b>
                                 <input
                                     id="guests"
                                     type="number"
                                     name="guests"
-                                    placeholder="Enter the No of Guests"
+                                    placeholder={`Max: ${place?.maxGuests} Members`}
                                     required
+                                    min={1}
+                                    max={place?.maxGuests}
+                                    onChange={(event) => {
+                                        setGuests(event.target.value);
+                                    }}
+                                    value={guests}
+
                                 />
                             </label>
                             <p className="font-bold text-xl ">{`₹ ${totalPrice} for ${totalDays} ${
