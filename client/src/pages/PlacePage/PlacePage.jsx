@@ -4,7 +4,7 @@ import { useParams } from "react-router";
 import { LocationIcon } from "../../assets/SVGAssets";
 import PhotoPreview from "./components/PhotoPreview";
 import Calendar from "./components/Calendar";
-// import { UserContext } from "../../context/UserContextProvider";
+import { UserContext } from "../../context/UserContextProvider";
 import { format } from "date-fns";
 import BookingForm from "./components/BookingForm";
 const PlacePage = () => {
@@ -16,9 +16,9 @@ const PlacePage = () => {
     const [totalPrice, setTotalPrice] = useState();
     const [guests, setGuests] = useState();
     // const [isCheckInDateValid, setIsCheckInDateValid] = useState();
-    // const {
-    //     alert: { setAlertMessage, setAlertType },
-    // } = useContext(UserContext);
+    const {
+        alert: { setAlertMessage, setAlertType },
+    } = useContext(UserContext);
     useEffect(() => {
         if (!id) {
             return;
@@ -30,7 +30,20 @@ const PlacePage = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log("Submitted");
+        axios
+            .post("/book-place", {
+                checkInDate,
+                checkOutDate,
+                totalDays,
+                totalPrice,
+                guests,
+                place: id,
+            })
+            .then((response) => {
+                const { data } = response;
+                setAlertMessage(data.message);
+                setAlertType(data.type);
+            });
     };
 
     return (

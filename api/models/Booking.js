@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { Schema } from "mongoose";
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
 const bookingSchema = new Schema({
     place: {
@@ -31,3 +31,6 @@ const bookingSchema = new Schema({
         required: true,
     },
 });
+
+const bookingModel = mongoose.model("Booking", bookingSchema);
+module.exports = bookingModel;

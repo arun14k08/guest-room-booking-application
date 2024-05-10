@@ -14,6 +14,7 @@ const jwtSecretKey = process.env.JWT_SECRET_KEY;
 // importing schemas
 const User = require("./models/User.js");
 const Place = require("./models/Place.js");
+const Booking = require("./models/Booking.js");
 
 // initialize express
 const app = express();
@@ -47,6 +48,9 @@ mongoose
 app.get("/", (req, res) => {
     res.json("ok");
 });
+
+// ** Owner routes **
+
 // register a new user
 app.post("/register", async (req, res) => {
     const { name, email, phone, password, role } = req.body;
@@ -332,6 +336,8 @@ app.delete("/place/:id", async (req, res) => {
     });
 });
 
+// ** Customer Routes **
+
 // get all places
 app.get("/places", async (req, res) => {
     const places = await Place.find({});
@@ -343,6 +349,41 @@ app.get("/places/:id", async (req, res) => {
     const { id } = req.params;
     const place = await Place.findById(id);
     res.status(200).json({ place });
+});
+
+// process booking request
+app.post("/book-place", async (req, res) => {
+    const { checkInDate, checkOutDate, totalPrice, guests, place } = req.body;
+    const { authToken } = req.cookies;
+
+    if (!authToken) {
+        return res.json({ message: "Kindly login to book", type: "info" });
+    }
+
+    jwt.verify(authToken, jwtSecretKey, cookieOptions, async (err, data) => {
+        if (err) throw err;
+        const { id } = data;
+        const userDoc = await User.findById(id);
+        const placeDoc = await Place.findById(place);
+
+        if (!userDoc) {
+            return res.json({ message: "Kindly login to book", type: "info" });
+        }
+        const newBooking = await Booking.create({
+            user: userDoc._id,
+            place,
+            owner: placeDoc.owner,
+            checkInDate,
+            checkOutDate,
+            price: totalPrice,
+            guests,
+        });
+        res.status(200).json({
+            message: "Your booking request has been sent",
+            type: "success",
+            newBooking,
+        });
+    });
 });
 
 // starting the server
