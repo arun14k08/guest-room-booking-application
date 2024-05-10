@@ -90,6 +90,11 @@ const Calendar = ({
             setCheckOutDate(minimumCheckOut);
             return;
         }
+
+        if (date > parseISO(checkOutDate)) {
+            setCheckOutDate(formattedDate);
+            return;
+        }
     };
 
     return (
