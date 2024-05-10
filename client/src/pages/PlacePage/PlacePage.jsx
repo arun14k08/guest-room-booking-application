@@ -6,6 +6,7 @@ import PhotoPreview from "./components/PhotoPreview";
 import Calendar from "./components/Calendar";
 // import { UserContext } from "../../context/UserContextProvider";
 import { format } from "date-fns";
+import BookingForm from "./components/BookingForm";
 const PlacePage = () => {
     const { id } = useParams();
     const [place, setPlace] = useState();
@@ -27,6 +28,11 @@ const PlacePage = () => {
         });
     }, []);
 
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        console.log("Submitted");
+    };
+
     return (
         <div className="mx-24">
             <div className="flex flex-col gap-3">
@@ -42,81 +48,20 @@ const PlacePage = () => {
                     <div>More Details</div>
                 </div>
                 <div>
-                    <form method="post" className="flex flex-col gap-4">
-                        <div className="flex gap-4">
-                            <label htmlFor="check-in">
-                                Check In:
-                                <input
-                                    id="check-in"
-                                    type="text"
-                                    name="checkIn"
-                                    value={checkInDate}
-                                    placeholder="YYYY-MM-DD"
-                                    disabled
-                                    onChange={(event) => {
-                                        setCheckInDate(event.target.value);
-                                    }}
-                                    required
-                                />
-                            </label>
-                            <label htmlFor="checkout">
-                                Check Out:
-                                <input
-                                    id="checkout"
-                                    type="text"
-                                    name="checkOut"
-                                    value={checkOutDate}
-                                    placeholder="YYYY-MM-DD"
-                                    disabled
-                                    onChange={(event) => {
-                                        setCheckOutDate(event.target.value);
-                                    }}
-                                    required
-                                />
-                            </label>
-                        </div>
-                        <div>
-                            {/*Availability  Calendar */}
-                            <Calendar
-                                checkInDate={checkInDate}
-                                setCheckInDate={setCheckInDate}
-                                checkOutDate={checkOutDate}
-                                setCheckOutDate={setCheckOutDate}
-                                setTotalDays={setTotalDays}
-                                setTotalPrice={setTotalPrice}
-                                price={place?.price}
-                                minimumBookingDays={place?.minimumBooking}
-                                maximumBookingDays={place?.maximumBooking}
-                            />
-                        </div>
-                        <div
-                            className={`${checkOutDate ? "visible" : "hidden"}`}
-                        >
-                            <label htmlFor="guests">
-                                No of Guests: <b>(Max- {place?.maxGuests})</b>
-                                <input
-                                    id="guests"
-                                    type="number"
-                                    name="guests"
-                                    placeholder={`Max: ${place?.maxGuests} Members`}
-                                    required
-                                    min={1}
-                                    max={place?.maxGuests}
-                                    onChange={(event) => {
-                                        setGuests(event.target.value);
-                                    }}
-                                    value={guests}
-
-                                />
-                            </label>
-                            <p className="font-bold text-xl ">{`₹ ${totalPrice} for ${totalDays} ${
-                                totalDays === 1 ? "night" : "nights"
-                            }`}</p>
-                        </div>
-                        <button className="button" type="submit">
-                            Book
-                        </button>
-                    </form>
+                    <BookingForm
+                        checkInDate={checkInDate}
+                        checkOutDate={checkOutDate}
+                        totalDays={totalDays}
+                        totalPrice={totalPrice}
+                        guests={guests}
+                        setCheckInDate={setCheckInDate}
+                        setCheckOutDate={setCheckOutDate}
+                        setGuests={setGuests}
+                        setTotalDays={setTotalDays}
+                        setTotalPrice={setTotalPrice}
+                        place={place}
+                        handleSubmit={handleSubmit}
+                    />
                 </div>
             </div>
         </div>
