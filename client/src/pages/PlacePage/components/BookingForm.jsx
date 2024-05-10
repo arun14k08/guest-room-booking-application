@@ -12,10 +12,17 @@ const BookingForm = ({
     setTotalDays,
     setTotalPrice,
     place,
-    handleSubmit
+    handleSubmit,
+    bookings,
 }) => {
     return (
-        <form method="post" className="flex flex-col gap-4" onSubmit={(event)=>{handleSubmit(event)}}>
+        <form
+            method="post"
+            className="flex flex-col gap-4"
+            onSubmit={(event) => {
+                handleSubmit(event);
+            }}
+        >
             <div className="flex gap-4">
                 <label htmlFor="check-in">
                     Check In:
@@ -60,6 +67,7 @@ const BookingForm = ({
                     price={place?.price}
                     minimumBookingDays={place?.minimumBooking}
                     maximumBookingDays={place?.maximumBooking}
+                    bookings={bookings}
                 />
             </div>
             <div className={`${checkOutDate ? "visible" : "hidden"}`}>

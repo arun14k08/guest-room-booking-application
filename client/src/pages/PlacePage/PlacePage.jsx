@@ -15,6 +15,7 @@ const PlacePage = () => {
     const [totalDays, setTotalDays] = useState();
     const [totalPrice, setTotalPrice] = useState();
     const [guests, setGuests] = useState();
+    const [bookings, setBookings] = useState([]);
     // const [isCheckInDateValid, setIsCheckInDateValid] = useState();
     const {
         alert: { setAlertMessage, setAlertType },
@@ -23,8 +24,11 @@ const PlacePage = () => {
         if (!id) {
             return;
         }
-        axios.get("places/" + id).then((response) => {
+        axios.get("/places/" + id).then((response) => {
             setPlace(response.data.place);
+            axios.get(`/old-bookings/${id}`).then((response) => {
+                setBookings(response.data.bookings);
+            });
         });
     }, []);
 
@@ -74,6 +78,7 @@ const PlacePage = () => {
                         setTotalPrice={setTotalPrice}
                         place={place}
                         handleSubmit={handleSubmit}
+                        bookings={bookings}
                     />
                 </div>
             </div>

@@ -348,12 +348,18 @@ app.get("/places", async (req, res) => {
 app.get("/places/:id", async (req, res) => {
     const { id } = req.params;
     const place = await Place.findById(id);
+    if (!place) {
+        return res.status(200).json({
+            message: "Place not found",
+            type: "warning",
+        });
+    }
     res.status(200).json({ place });
 });
 
 // process booking request
 app.post("/book-place", async (req, res) => {
-    const { checkInDate, checkOutDate, totalPrice, guests, place } = req.body;
+    const { checkInDate, checkOutDate, totalPrice, guests, place, totalDays } = req.body;
     const { authToken } = req.cookies;
 
     if (!authToken) {
@@ -376,6 +382,7 @@ app.post("/book-place", async (req, res) => {
             checkInDate,
             checkOutDate,
             price: totalPrice,
+            days: totalDays,
             guests,
         });
         res.status(200).json({
@@ -384,6 +391,20 @@ app.post("/book-place", async (req, res) => {
             newBooking,
         });
     });
+});
+
+// get all bookings of a place
+app.get("/old-bookings/:id", async (req, res) => {
+    const { id } = req.params;
+    const bookings = await Booking.find({ place: id });
+    if (!bookings) {
+        return res.status(200).json({
+            bookings: null,
+            message: "No bookings found",
+            type: "info",
+        });
+    }
+    res.status(200).json({ bookings, message: "Bookings found", type: "info" });
 });
 
 // starting the server

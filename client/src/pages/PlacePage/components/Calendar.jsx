@@ -22,6 +22,7 @@ const Calendar = ({
     price,
     minimumBookingDays,
     maximumBookingDays,
+    bookings,
 }) => {
     const [month, setMonth] = useState(new Date().getMonth() + 1);
     const [year, setYear] = useState(new Date().getFullYear());
@@ -33,12 +34,54 @@ const Calendar = ({
     );
     const [minimumDateToCheckOut, setMinimumDateToCheckOut] = useState();
     const [maximumDateToCheckOut, setMaximumDateToCheckOut] = useState();
+    const [currentMonthBookings, setCurrentMonthBookings] = useState([]);
+    const [checkOutOnlyDates, setCheckOutOnlyDates] = useState([]);
 
     useEffect(() => {
         let days = (parseISO(checkOutDate) - parseISO(checkInDate)) / 86400000;
         setTotalDays(days);
         setTotalPrice(days * price);
     }, [checkInDate, checkOutDate]);
+
+    useEffect(() => {
+        if (!bookings) return;
+        let checkOutOnlyDates = [];
+        bookings
+            .filter((booking) => {
+                return (
+                    parseISO(booking.checkInDate) > new Date(year, month - 1, 1)
+                );
+            })
+            .map((booking) => {
+                const { checkInDate, checkOutDate } = booking;
+                const checkInDateParsed = parseISO(checkInDate);
+                const checkOutDateParsed = parseISO(checkOutDate);
+                let checkInDayNumber = Number(format(checkInDateParsed, "dd"));
+                let checkOutDayNumber = Number(
+                    format(checkOutDateParsed, "dd")
+                );
+                let checkOutOnlyDate = format(
+                    new Date(year, month, checkInDayNumber - 1),
+                    "yyyy-MM-dd"
+                );
+                let bookedDates = [];
+
+                checkOutOnlyDates.push(checkOutOnlyDate);
+                for (let i = checkInDayNumber; i < checkOutDayNumber; i++) {
+                    let bookedDate = new Date(year, month - 1, i);
+                    let bookedDateFormatted = format(bookedDate, "yyyy-MM-dd");
+                    bookedDates.push(bookedDateFormatted);
+                }
+                setCurrentMonthBookings((prev) => {
+                    return [...prev, ...bookedDates];
+                });
+                console.log(currentMonthBookings);
+            });
+        setCheckOutOnlyDates((prev) => {
+            return [...prev, ...checkOutOnlyDates];
+        });
+        console.log(checkOutOnlyDates);
+    }, [bookings, month, year]);
 
     const handleRightClick = () => {
         const nextMonth = month === 12 ? 1 : month + 1;
@@ -145,12 +188,23 @@ const Calendar = ({
                         return <DisabledDate key={index} index={index} />;
                     }
 
-                    // dates beyond maximum selectable date
+                    // already booked dates are disabled
+                    if (
+                        currentMonthBookings.includes(
+                            format(
+                                new Date(year, month - 1, index + 1),
+                                "yyyy-MM-dd"
+                            )
+                        )
+                    ) {
+                        return <DisabledDate key={index} index={index} />;
+                    }
                     if (
                         maximumDateToCheckOut &&
                         parseISO(maximumDateToCheckOut) <
                             new Date(year, month - 1, index + 1)
                     ) {
+                        // dates beyond maximum selectable date are disabled
                         return <DisabledDate key={index} index={index} />;
                     }
 

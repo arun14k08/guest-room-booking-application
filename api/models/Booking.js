@@ -26,6 +26,10 @@ const bookingSchema = new Schema({
         type: Number,
         required: true,
     },
+    days: {
+        type: Number,
+        required: true,
+    },
     guests: {
         type: Number,
         required: true,
