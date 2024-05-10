@@ -15,6 +15,7 @@ const PlaceForm = () => {
     const [rooms, setRooms] = useState();
     const [beds, setBeds] = useState();
     const [bathRooms, setBathRooms] = useState();
+    const [maxGuests, setMaxGuests] = useState();
     const [redirect, setRedirect] = useState();
     const [submitText, setSubmitText] = useState("Add Place");
     const {
@@ -41,6 +42,7 @@ const PlaceForm = () => {
             setRooms(data.rooms);
             setBeds(data.beds);
             setBathRooms(data.bathRooms);
+            setMaxGuests(data.maxGuests);
         });
     }, [id]);
 
@@ -95,6 +97,7 @@ const PlaceForm = () => {
                     beds,
                     bathRooms,
                     photos,
+                    maxGuests,
                 })
                 .then((response) => {
                     const { data } = response;
@@ -297,6 +300,17 @@ const PlaceForm = () => {
                         />
                     </label>
                 </div>
+                <label htmlFor="guests">
+                    No of Max Guests:
+                    <input
+                        id="guests"
+                        type="number"
+                        placeholder="Enter the No of Bathrooms"
+                        value={maxGuests}
+                        onChange={(event) => setMaxGuests(event.target.value)}
+                        required
+                    />
+                </label>
                 <p>Photos:</p>
                 <div className="grid grid-cols-4 lg:grid-cols-4 gap-4">
                     <label htmlFor="photo" className="cursor-pointer h-32">

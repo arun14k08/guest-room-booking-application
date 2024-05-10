@@ -219,6 +219,7 @@ app.post("/places/new", async (req, res) => {
         beds,
         bathRooms,
         photos,
+        maxGuests,
     } = req.body;
 
     const { authToken } = req.cookies;
@@ -244,6 +245,7 @@ app.post("/places/new", async (req, res) => {
             beds,
             bathRooms,
             photos,
+            maxGuests,
         });
         res.status(200).json({
             message: "Place created successfully",
@@ -340,7 +342,7 @@ app.get("/places", async (req, res) => {
 app.get("/places/:id", async (req, res) => {
     const { id } = req.params;
     const place = await Place.findById(id);
-    res.status(200).json({place});
+    res.status(200).json({ place });
 });
 
 // starting the server
