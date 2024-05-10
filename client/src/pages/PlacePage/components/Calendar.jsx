@@ -6,6 +6,7 @@ import {
     BlankDate,
     CheckInDate,
     CheckOutDate,
+    CheckOutOnlyDate,
     ClearDates,
     DisabledDate,
     SelectableDate,
@@ -61,7 +62,7 @@ const Calendar = ({
                     format(checkOutDateParsed, "dd")
                 );
                 let checkOutOnlyDate = format(
-                    new Date(year, month, checkInDayNumber - 1),
+                    new Date(year, month - 1, checkInDayNumber - 1),
                     "yyyy-MM-dd"
                 );
                 let bookedDates = [];
@@ -199,6 +200,19 @@ const Calendar = ({
                     ) {
                         return <DisabledDate key={index} index={index} />;
                     }
+
+                    // checkout only dates
+                    if (
+                        checkOutOnlyDates.includes(
+                            format(
+                                new Date(year, month - 1, index + 1),
+                                "yyyy-MM-dd"
+                            )
+                        )
+                    ) {
+                        return <CheckOutOnlyDate key={index} index={index} />;
+                    }
+
                     if (
                         maximumDateToCheckOut &&
                         parseISO(maximumDateToCheckOut) <

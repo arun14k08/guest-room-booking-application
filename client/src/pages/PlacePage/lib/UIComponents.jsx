@@ -74,3 +74,11 @@ export const ClearDates = ({
         </button>
     );
 };
+
+export const CheckOutOnlyDate = ({index}) => {
+    return (
+        <p className="py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full bg-slate-200 ring-1 ring-slate-300 text-slate-400">
+            {index + 1}
+        </p>
+    );
+};
