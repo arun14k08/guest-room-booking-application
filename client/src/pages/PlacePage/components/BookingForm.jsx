@@ -72,7 +72,7 @@ const BookingForm = ({
             </div>
             <div className={`${checkOutDate ? "visible" : "hidden"}`}>
                 <label htmlFor="guests">
-                    No of Guests: <b>(Max- {place?.maxGuests})</b>
+                    No of Guests: <b>Max- {place?.maxGuests}</b>
                     <input
                         id="guests"
                         type="number"

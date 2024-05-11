@@ -20,6 +20,7 @@ export const SelectableDate = ({ index, month, year, handleDateSelect }) => {
                     day: index + 1,
                     month,
                     year,
+                    options: { isCheckOutOnly: false },
                 });
             }}
         >
@@ -75,10 +76,29 @@ export const ClearDates = ({
     );
 };
 
-export const CheckOutOnlyDate = ({index}) => {
+export const CheckOutOnlyDate = ({ index, handleDateSelect, month, year }) => {
     return (
-        <p className="py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full bg-slate-200 ring-1 ring-slate-300 text-slate-400">
+        <button
+            onClick={(event) => {
+                event.preventDefault();
+                handleDateSelect({
+                    day: index + 1,
+                    month,
+                    year,
+                    options: { isCheckOutOnly: true },
+                });
+            }}
+            className="py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full bg-slate-200 ring-1 ring-slate-300 text-slate-400"
+        >
             {index + 1}
+        </button>
+    );
+};
+
+export const BookedDate = ({ index }) => {
+    return (
+        <p className="py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full ring-black bg-primary">
+            <s className="text-white">{index + 1}</s>
         </p>
     );
 };

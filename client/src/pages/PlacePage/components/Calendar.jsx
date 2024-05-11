@@ -4,6 +4,7 @@ import { LeftIcon, RightIcon } from "../assets/SVGAssets";
 import { format, parseISO } from "date-fns";
 import {
     BlankDate,
+    BookedDate,
     CheckInDate,
     CheckOutDate,
     CheckOutOnlyDate,
@@ -45,6 +46,25 @@ const Calendar = ({
     }, [checkInDate, checkOutDate]);
 
     useEffect(() => {
+        if (!checkInDate || !checkOutDate) {
+            return;
+        }
+        const checkInDateParsed = parseISO(checkInDate);
+        const checkOutDateParsed = parseISO(checkOutDate);
+        let checkInDayNumber = Number(format(checkInDateParsed, "dd"));
+        let checkOutDayNumber = Number(format(checkOutDateParsed, "dd"));
+        for (let i = checkInDayNumber; i <= checkOutDayNumber; i++) {
+            let date = new Date(year, month - 1, i);
+            let dateFormatted = format(date, "yyyy-MM-dd");
+            if (checkOutOnlyDates.includes(dateFormatted)) {
+                setCheckOutDate(dateFormatted);
+                setMaximumDateToCheckOut(dateFormatted);
+                return;
+            }
+        }
+    }, [checkInDate, checkOutDate, month, year]);
+
+    useEffect(() => {
         if (!bookings) return;
         let checkOutOnlyDates = [];
         bookings
@@ -62,13 +82,13 @@ const Calendar = ({
                     format(checkOutDateParsed, "dd")
                 );
                 let checkOutOnlyDate = format(
-                    new Date(year, month - 1, checkInDayNumber - 1),
+                    new Date(year, month - 1, checkInDayNumber),
                     "yyyy-MM-dd"
                 );
                 let bookedDates = [];
 
                 checkOutOnlyDates.push(checkOutOnlyDate);
-                for (let i = checkInDayNumber; i < checkOutDayNumber; i++) {
+                for (let i = checkInDayNumber + 1; i < checkOutDayNumber; i++) {
                     let bookedDate = new Date(year, month - 1, i);
                     let bookedDateFormatted = format(bookedDate, "yyyy-MM-dd");
                     bookedDates.push(bookedDateFormatted);
@@ -82,7 +102,7 @@ const Calendar = ({
             return [...prev, ...checkOutOnlyDates];
         });
         console.log(checkOutOnlyDates);
-    }, [bookings, month, year]);
+    }, [bookings, month, year, checkInDate, checkOutDate]);
 
     const handleRightClick = () => {
         const nextMonth = month === 12 ? 1 : month + 1;
@@ -112,12 +132,23 @@ const Calendar = ({
         setNumberOfDays(new Date(year, month, 0).getDate());
     };
 
-    const handleDateSelect = ({ day, month, year }) => {
+    const handleDateSelect = ({
+        day,
+        month,
+        year,
+        options: { isCheckOutOnly },
+    }) => {
         const date = new Date(year, month - 1, day);
         const formattedDate = format(date, "yyyy-MM-dd");
         let minimumCheckOut = "";
         let maximumCheckOut = "";
         let SelectedBeforeOldCheckIn = date < parseISO(checkInDate);
+
+        // if selected check out without selecting check in date
+        if (isCheckOutOnly && !checkInDate) {
+            return;
+        }
+
         //  selecting a date before the check-in date (or) check-in is not selected
         if (SelectedBeforeOldCheckIn || !checkInDate) {
             minimumCheckOut = format(
@@ -198,7 +229,51 @@ const Calendar = ({
                             )
                         )
                     ) {
+                        return <BookedDate key={index} index={index} />;
+                    }
+
+                    // dates which cannot be booked are disabled
+                    // ** The date which is between disabled dates on both sides**
+                    // ** Disables dates - past dates (or) already booked dates**
+                    if (
+                        checkOutOnlyDates.includes(
+                            format(
+                                new Date(year, month - 1, index + 1),
+                                "yyyy-MM-dd"
+                            )
+                        ) &&
+                        (currentMonthBookings.includes(
+                            format(
+                                new Date(year, month - 1, index),
+                                "yyyy-MM-dd"
+                            )
+                        ) ||
+                            new Date(year, month - 1, index) < new Date()) &&
+                        (currentMonthBookings.includes(
+                            format(
+                                new Date(year, month - 1, index + 2),
+                                "yyyy-MM-dd"
+                            )
+                        ) ||
+                            new Date(year, month - 1, index + 2) < new Date())
+                    ) {
                         return <DisabledDate key={index} index={index} />;
+                    }
+
+                    // checkout and checkoutOnly date matches then return a checkout UI element
+                    if (
+                        checkOutOnlyDates.includes(
+                            format(
+                                new Date(year, month - 1, index + 1),
+                                "yyyy-MM-dd"
+                            )
+                        ) &&
+                        format(
+                            new Date(year, month - 1, index + 1),
+                            "yyyy-MM-dd"
+                        ) === checkOutDate
+                    ) {
+                        return <CheckOutDate key={index} index={index} />;
                     }
 
                     // checkout only dates
@@ -210,7 +285,15 @@ const Calendar = ({
                             )
                         )
                     ) {
-                        return <CheckOutOnlyDate key={index} index={index} />;
+                        return (
+                            <CheckOutOnlyDate
+                                key={index}
+                                index={index}
+                                handleDateSelect={handleDateSelect}
+                                month={month}
+                                year={year}
+                            />
+                        );
                     }
 
                     if (
