@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { days, months } from "../lib/calendar";
 import { LeftIcon, RightIcon } from "../assets/SVGAssets";
 import { format, parseISO } from "date-fns";
+import { UserContext } from "../../../context/UserContextProvider";
 import {
     BlankDate,
     BookedDate,
@@ -38,6 +39,9 @@ const Calendar = ({
     const [maximumDateToCheckOut, setMaximumDateToCheckOut] = useState();
     const [currentMonthBookings, setCurrentMonthBookings] = useState([]);
     const [checkOutOnlyDates, setCheckOutOnlyDates] = useState([]);
+    const {
+        alert: { setAlertMessage, setAlertType },
+    } = useContext(UserContext);
 
     useEffect(() => {
         let days = (parseISO(checkOutDate) - parseISO(checkInDate)) / 86400000;
@@ -46,9 +50,7 @@ const Calendar = ({
     }, [checkInDate, checkOutDate]);
 
     useEffect(() => {
-        if (!checkInDate || !checkOutDate) {
-            return;
-        }
+        if (!checkInDate || !checkOutDate) return;
         const checkInDateParsed = parseISO(checkInDate);
         const checkOutDateParsed = parseISO(checkOutDate);
         let checkInDayNumber = Number(format(checkInDateParsed, "dd"));
@@ -146,6 +148,8 @@ const Calendar = ({
 
         // if selected check out without selecting check in date
         if (isCheckOutOnly && !checkInDate) {
+            setAlertMessage("It is an Check Out Only Date");
+            setAlertType("info");
             return;
         }
 

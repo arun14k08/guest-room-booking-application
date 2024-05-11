@@ -23,6 +23,16 @@ const UserContextProvider = ({ children }) => {
         }
     }, []);
 
+    useEffect(() => {
+        let { setAlertMessage, setAlertType } = alert;
+        if (!setAlertMessage || !setAlertType) return;
+        const alertThreshold = 6000;
+        setTimeout(() => {
+            setAlertMessage("");
+            setAlertType("");
+        }, alertThreshold);
+    }, [alert]);
+
     return (
         <UserContext.Provider
             value={{
@@ -33,7 +43,7 @@ const UserContextProvider = ({ children }) => {
                 alert,
             }}
         >
-            <div className="fixed rounded-lg top-24 right-8 shadow-xl overflow-hidden z-10">
+            <div className="fixed rounded-lg top-24 right-8 shadow-xl overflow-hidden z-10 transition-all">
                 {alertMessage ? (
                     <Alert variant="filled" severity={alertType}>
                         {alertMessage}
