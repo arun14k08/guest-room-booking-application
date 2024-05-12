@@ -336,6 +336,24 @@ app.delete("/place/:id", async (req, res) => {
     });
 });
 
+// get all the reservations for a particular owner
+app.get("/reservations", (req, res) => {
+    const { authToken } = req.cookies;
+    console.log(authToken);
+    if (!authToken) {
+        res.status(200).json({
+            message: "you are not authorized to access",
+            type: "warning",
+        });
+    }
+    jwt.verify(authToken, jwtSecretKey, cookieOptions, async (err, data) => {
+        if (err) throw err;
+        const { id } = data;
+        const reservations = await Booking.find({ owner: id });
+        res.status(200).json({ reservations });
+    });
+});
+
 // ** Customer Routes **
 
 // get all places
@@ -348,6 +366,10 @@ app.get("/places", async (req, res) => {
 app.get("/places/:id", async (req, res) => {
     const { id } = req.params;
     const place = await Place.findById(id);
+    let {
+        owner: { name, email },
+    } = await place.populate("owner");
+    place.owner = { name, email };
     if (!place) {
         return res.status(200).json({
             message: "Place not found",
@@ -359,7 +381,8 @@ app.get("/places/:id", async (req, res) => {
 
 // process booking request
 app.post("/book-place", async (req, res) => {
-    const { checkInDate, checkOutDate, totalPrice, guests, place, totalDays } = req.body;
+    const { checkInDate, checkOutDate, totalPrice, guests, place, totalDays } =
+        req.body;
     const { authToken } = req.cookies;
 
     if (!authToken) {
