@@ -94,21 +94,21 @@ const Listings = ({
                                 </div>
                                 <div className="flex ml-2 mb-2 py-4 px-6 gap-6 bg-slate-300 rounded-full mt-6 font-semibold text-[#525252] w-fit">
                                     <p className="text-[16px]">
-                                        $ {place.price}
+                                        ₹ {place?.price}
                                     </p>
                                     <div className="w-[1px] -my-4 bg-slate-500 rounded-md">
                                         &nbsp;
                                     </div>
                                     <p className="text-[16px] flex gap-2">
                                         <RoomIcon />
-                                        Rooms: {place.rooms}
+                                        Rooms: {place?.rooms}
                                     </p>
                                     <div className="w-[1px] -my-4 bg-slate-500 rounded-md">
                                         &nbsp;
                                     </div>
                                     <p className="text-[16px] flex gap-2">
                                         <BedIcon />
-                                        Beds: {place.beds}
+                                        Beds: {place?.beds}
                                     </p>
                                 </div>
                             </div>

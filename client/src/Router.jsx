@@ -7,6 +7,8 @@ import DashBoard from "./pages/DashBoard/DashBoard";
 import AccountPage from "./pages/AccountPage/AccountPage";
 import PlaceForm from "./pages/DashBoard/components/PlaceForm";
 import PlacePage from "./pages/PlacePage/PlacePage";
+import DashBoardLayout from "./layouts/DashBoardLayout";
+import Reservations from "./pages/DashBoard/components/Reservations";
 
 export const Router = createBrowserRouter([
     {
@@ -24,10 +26,6 @@ export const Router = createBrowserRouter([
             {
                 path: "register",
                 element: <RegisterPage />,
-            },
-            {
-                path: "dashboard",
-                element: <DashBoard />,
             },
             {
                 path: "account",
@@ -53,4 +51,18 @@ export const Router = createBrowserRouter([
             }
         ],
     },
+    {
+        path:"/dashboard",
+        element:<DashBoardLayout/>,
+        children:[
+            {
+                path:"/dashboard",
+                element:<DashBoard/>
+            },
+            {
+                path:"reservations",
+                element:<Reservations/>
+            }
+        ]
+    }
 ]);
