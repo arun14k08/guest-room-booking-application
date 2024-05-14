@@ -12,17 +12,20 @@ const PhotoPreview = ({ photos }) => {
 
     return (
         <div
-            className="rounded-lg overflow-hidden grid grid-cols-2 h-[480px] gap-2 cursor-pointer"
+            className="rounded-lg overflow-hidden grid grid-cols-2 max-h-[480px] gap-2 cursor-pointer"
             onClick={() => {
                 setShowGallery(true);
             }}
         >
+            <div className="flex justify-center items-center w-full h-[480px]"> 
+
             <img
                 src={"http://localhost:3000/uploads/" + photos[0]}
                 alt="photo"
-                className="h-[480px] object-cover"
+                className="object-cover min-h-[480px]"
             />
-            <div className="grid grid-cols-2 gap-2 relative">
+            </div>
+            <div className="grid grid-cols-2 gap-2 relative max-h-[480px]">
                 {photos
                     .filter((photo, index) => {
                         return index !== 0 && index <= 4;
