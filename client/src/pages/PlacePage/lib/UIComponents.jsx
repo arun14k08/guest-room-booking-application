@@ -4,7 +4,7 @@ export const BlankDate = () => {
 
 export const DisabledDate = ({ index }) => {
     return (
-        <p className="py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full ring-black">
+        <p className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full ring-black">
             <s className="text-slate-300">{index + 1}</s>
         </p>
     );
@@ -13,7 +13,7 @@ export const DisabledDate = ({ index }) => {
 export const SelectableDate = ({ index, month, year, handleDateSelect }) => {
     return (
         <button
-            className="py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full hover:bg-slate-200  hover:ring-1 hover:ring-black"
+            className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full hover:bg-slate-200  hover:ring-1 hover:ring-black"
             onClick={(event) => {
                 event.preventDefault();
                 handleDateSelect({
@@ -31,7 +31,7 @@ export const SelectableDate = ({ index, month, year, handleDateSelect }) => {
 
 export const SelectedDate = ({ index }) => {
     return (
-        <p className="py-3 flex transition-all  justify-center items-center cursor-pointer -mx-2 bg-slate-400 text-white">
+        <p className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer -mx-2 bg-slate-400 text-white">
             {index + 1}
         </p>
     );
@@ -39,7 +39,7 @@ export const SelectedDate = ({ index }) => {
 
 export const CheckInDate = ({ index }) => {
     return (
-        <p className="py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full bg-gradient-to-r from-black to-slate-400 text-white rounded-r-none">
+        <p className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full bg-gradient-to-r from-black to-slate-400 text-white rounded-r-none">
             {index + 1}
         </p>
     );
@@ -49,7 +49,7 @@ export const CheckOutDate = ({ index }) => {
     return (
         <p
             key={index}
-            className="py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full bg-gradient-to-l from-black to-slate-400 text-white rounded-l-none"
+            className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full bg-gradient-to-l from-black to-slate-400 text-white rounded-l-none"
         >
             {index + 1}
         </p>
@@ -88,7 +88,7 @@ export const CheckOutOnlyDate = ({ index, handleDateSelect, month, year }) => {
                     options: { isCheckOutOnly: true },
                 });
             }}
-            className="py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full bg-slate-200 ring-1 ring-slate-300 text-slate-400"
+            className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full bg-slate-200 ring-1 ring-slate-300 text-slate-400"
         >
             {index + 1}
         </button>
@@ -97,7 +97,7 @@ export const CheckOutOnlyDate = ({ index, handleDateSelect, month, year }) => {
 
 export const BookedDate = ({ index }) => {
     return (
-        <p className="py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full ring-black bg-primary">
+        <p className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full ring-black bg-primary">
             <s className="text-white">{index + 1}</s>
         </p>
     );
