@@ -123,6 +123,7 @@ const PlaceForm = () => {
                     beds,
                     bathRooms,
                     photos,
+                    maxGuests,
                 })
                 .then((response) => {
                     const { data } = response;
