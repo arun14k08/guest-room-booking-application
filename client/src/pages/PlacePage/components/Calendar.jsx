@@ -72,7 +72,8 @@ const Calendar = ({
         bookings
             .filter((booking) => {
                 return (
-                    parseISO(booking.checkInDate) > new Date(year, month - 1, 1)
+                    parseISO(booking.checkInDate) >=
+                    new Date(year, month - 1, 1)
                 );
             })
             .map((booking) => {
@@ -261,7 +262,7 @@ const Calendar = ({
                         ) ||
                             new Date(year, month - 1, index + 2) < new Date())
                     ) {
-                        return <DisabledDate key={index} index={index} />;
+                        return <BookedDate key={index} index={index} />;
                     }
 
                     // checkout and checkoutOnly date matches then return a checkout UI element
