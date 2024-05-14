@@ -3,7 +3,7 @@ import { UserContext } from "../../context/UserContextProvider";
 import { Navigate } from "react-router";
 import axios from "axios";
 import Listings from "./components/Listings";
-import { AddIcon } from "./assets/SVGAssets";
+import { AddIcon, ListingsIcon, MenuIcon } from "./assets/SVGAssets";
 
 const DashBoard = () => {
     const {
@@ -44,6 +44,7 @@ const DashBoard = () => {
 
     return (
         <div className="flex flex-col justify-center items-center">
+           
             <div className="px-8 mt-8 w-full justify-end">
                 <button
                     onClick={() => {

@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const placeSchema = new Schema({
     owner: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "User",
     },
     name: {

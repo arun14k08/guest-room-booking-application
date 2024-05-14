@@ -339,7 +339,6 @@ app.delete("/place/:id", async (req, res) => {
 // get all the reservations for a particular owner
 app.get("/reservations", (req, res) => {
     const { authToken } = req.cookies;
-    console.log(authToken);
     if (!authToken) {
         res.status(200).json({
             message: "you are not authorized to access",
@@ -349,7 +348,10 @@ app.get("/reservations", (req, res) => {
     jwt.verify(authToken, jwtSecretKey, cookieOptions, async (err, data) => {
         if (err) throw err;
         const { id } = data;
-        const reservations = await Booking.find({ owner: id });
+        let reservations = await Booking.find({ owner: id })
+            .populate("user")
+            .populate("place");
+
         res.status(200).json({ reservations });
     });
 });
