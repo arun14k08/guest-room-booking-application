@@ -8,9 +8,14 @@ axios.defaults.withCredentials = true;
 
 const App = () => {
     return (
-        <UserContextProvider>
-            <RouterProvider router={Router} fallbackElement={"Loading..."} />
-        </UserContextProvider>
+        <div className="w-full px-8 py-2">
+            <UserContextProvider>
+                <RouterProvider
+                    router={Router}
+                    fallbackElement={"Loading..."}
+                />
+            </UserContextProvider>
+        </div>
     );
 };
 
