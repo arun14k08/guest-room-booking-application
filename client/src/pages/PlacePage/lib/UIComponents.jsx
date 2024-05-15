@@ -67,9 +67,14 @@ export const ClearDates = ({
     );
 };
 
-export const CheckOutOnlyDate = ({ children }) => {
+export const CheckOutOnlyDate = ({ children, handleDateSelect, day }) => {
     return (
-        <button className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full bg-slate-200 ring-1 ring-slate-300 text-slate-400">
+        <button
+            className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full bg-slate-200 ring-1 ring-slate-300 text-slate-400"
+            onClick={(event) => {
+                handleDateSelect(event, day, { checkOutOnly: true });
+            }}
+        >
             {children}
         </button>
     );

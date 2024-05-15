@@ -33,7 +33,8 @@ import {
     SelectableDate,
     SelectedDate,
 } from "../lib/UIComponents";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { UserContext } from "../../../context/UserContextProvider";
 const CalendarV2 = ({
     checkInDate,
     setCheckInDate,
@@ -49,7 +50,10 @@ const CalendarV2 = ({
     let today = startOfToday();
     const [month, setMonth] = useState(format(today, "MMM-yyyy"));
     const [maximumDateToBook, setMaximumDateToBook] = useState();
-
+    const [checkOutOnlyDates, setCheckOutOnlyDates] = useState([]);
+    const {
+        alert: { setAlertMessage, setAlertType },
+    } = useContext(UserContext);
     const handleNextMonth = (event) => {
         event.preventDefault();
         let currentMonth = parse(month, "MMM-yyyy", new Date());
@@ -80,23 +84,33 @@ const CalendarV2 = ({
         if (parseISO(checkOutDate) > maxDateToBeBooked) {
             setCheckOutDate(format(maxDateToBeBooked, "yyyy-MM-dd"));
         }
+        if (checkOutOnlyDates?.includes(checkOutDate)) {
+            setMaximumDateToBook(new Date(checkOutDate));
+        }
         setDays();
     }, [checkInDate, checkOutDate]);
 
     const setDays = () => {
         // block already booked dates
         bookings.forEach((booking, index) => {
-            console.log(booking);
+            // console.log(booking);
             days.forEach((day) => {
-                console.log("each day", day);
-                console.log(
-                    "checkIn - " + new Date(booking.checkInDate),
-                    new Date(day)
-                );
-                console.log(isEqual(day, booking.checkInDate));
+                // console.log("each day", day);
+                // console.log(
+                //     "checkIn - " + new Date(booking.checkInDate),
+                //     new Date(day)
+                // );
+                // console.log(isEqual(day, booking.checkInDate));
                 if (isEqual(new Date(day), parseISO(booking.checkInDate))) {
-                    console.log("yes");
                     day["isCheckOutOnly"] = true;
+                    if (
+                        !checkOutOnlyDates.includes(format(day, "yyyy-MM-dd"))
+                    ) {
+                        setCheckOutOnlyDates([
+                            ...checkOutOnlyDates,
+                            format(day, "yyyy-MM-dd"),
+                        ]);
+                    }
                 }
                 if (
                     isWithinInterval(day, {
@@ -115,7 +129,7 @@ const CalendarV2 = ({
                 )
             ) {
                 setCheckOutDate(
-                    format(add(booking.checkInDate, { days: -1 }), "yyyy-MM-dd")
+                    format(add(booking.checkInDate, { days: 0 }), "yyyy-MM-dd")
                 );
             }
 
@@ -135,11 +149,9 @@ const CalendarV2 = ({
                     end: new Date(booking.checkOutDate),
                 })
             ) {
-                setCheckOutDate(
-                    format(add(booking.checkInDate, { days: -1 }), "yyyy-MM-dd")
-                );
+                setCheckOutDate(format(booking.checkInDate, "yyyy-MM-dd"));
             }
-            console.log(days);
+            // console.log(days);
         });
         days.forEach((day) => {
             // assign date to the object
@@ -173,11 +185,20 @@ const CalendarV2 = ({
     };
     setDays();
 
-    const handleDateSelect = (event, day) => {
+    const handleDateSelect = (event, day, options) => {
         event.preventDefault();
+        if (options?.checkOutOnly && !checkInDate) {
+            setAlertMessage("Check Out Only");
+            setAlertType("warning");
+            return;
+        }
         if (!checkInDate) {
             setCheckInDate(format(day, "yyyy-MM-dd"));
-            const checkOut = add(day, { days: Number(minimumBookingDays) - 1 });
+            const checkOut = add(day, {
+                days:
+                    Number(minimumBookingDays) -
+                    (minimumBookingDays === 1 ? 0 : -1),
+            });
             setCheckOutDate(format(checkOut, "yyyy-MM-dd"));
             return;
         }
@@ -241,17 +262,17 @@ const CalendarV2 = ({
                             );
                         }
 
-                        if (day.isBooked) {
+                        if (day > maximumDateToBook) {
                             return (
-                                <BookedDate key={index}>{day.date}</BookedDate>
+                                <DisabledDate key={index}>
+                                    {day.date}
+                                </DisabledDate>
                             );
                         }
 
-                        if (day.isCheckOutOnly) {
+                        if (day.isBooked) {
                             return (
-                                <CheckOutOnlyDate key={index}>
-                                    {day.date}
-                                </CheckOutOnlyDate>
+                                <DisabledDate key={index}>{day.date}</DisabledDate>
                             );
                         }
 
@@ -275,6 +296,18 @@ const CalendarV2 = ({
                                 <CheckOutDate key={index}>
                                     {day.date}
                                 </CheckOutDate>
+                            );
+                        }
+
+                        if (day.isCheckOutOnly) {
+                            return (
+                                <CheckOutOnlyDate
+                                    key={index}
+                                    handleDateSelect={handleDateSelect}
+                                    day={day}
+                                >
+                                    {day.date}
+                                </CheckOutOnlyDate>
                             );
                         }
 
