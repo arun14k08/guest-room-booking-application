@@ -10,9 +10,14 @@ export const DisabledDate = ({ children }) => {
     );
 };
 
-export const SelectableDate = ({ children }) => {
+export const SelectableDate = ({ children, handleDateSelect, day }) => {
     return (
-        <button className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full hover:bg-slate-200  hover:ring-1 hover:ring-black">
+        <button
+            className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full hover:bg-slate-200  hover:ring-1 hover:ring-black"
+            onClick={(event) => {
+                handleDateSelect(event, day);
+            }}
+        >
             {children}
         </button>
     );
