@@ -1,4 +1,5 @@
 import Calendar from "./Calendar";
+import CalendarV2 from "./CalendarV2";
 
 const BookingForm = ({
     checkInDate,
@@ -57,7 +58,7 @@ const BookingForm = ({
             </div>
             <div>
                 {/*Availability  Calendar */}
-                <Calendar
+                {/* <Calendar
                     checkInDate={checkInDate}
                     setCheckInDate={setCheckInDate}
                     checkOutDate={checkOutDate}
@@ -68,7 +69,8 @@ const BookingForm = ({
                     minimumBookingDays={place?.minimumBooking}
                     maximumBookingDays={place?.maximumBooking}
                     bookings={bookings}
-                />
+                /> */}
+                <CalendarV2 />
             </div>
             <div className={`${checkOutDate ? "visible" : "hidden"}`}>
                 <label htmlFor="guests">
