@@ -23,7 +23,6 @@ import {
     startOfYesterday,
 } from "date-fns";
 import {
-    BookedDate,
     CheckInDate,
     CheckOutDate,
     CheckOutOnlyDate,
@@ -153,7 +152,7 @@ const CalendarV2 = ({
             }
             // console.log(days);
         });
-        days.forEach((day) => {
+        days.forEach((day, index) => {
             // assign date to the object
             day["date"] = day.getDate();
             // check if it is past date
@@ -181,6 +180,16 @@ const CalendarV2 = ({
             if (day > maximumDateToBook) {
                 day["isDisabled"] = true;
             }
+            if (day.isCheckOutOnly) {
+                const yesterday = days[index - 1];
+                const tomorrow = days[index + 1];
+                if (yesterday.isDisabled && tomorrow.isDisabled) {
+                    day["isDisabled"] = true;
+                }
+                if (yesterday.isCheckOutOnly && tomorrow.isCheckOutOnly) {
+                    day["isDisabled"] = true;
+                }
+            }
         });
     };
     setDays();
@@ -188,6 +197,11 @@ const CalendarV2 = ({
     const handleDateSelect = (event, day, options) => {
         event.preventDefault();
         if (options?.checkOutOnly && !checkInDate) {
+            setAlertMessage("Check Out Only");
+            setAlertType("warning");
+            return;
+        }
+        if (options?.checkOutOnly && new Date(checkInDate) > new Date(day)) {
             setAlertMessage("Check Out Only");
             setAlertType("warning");
             return;
@@ -272,7 +286,9 @@ const CalendarV2 = ({
 
                         if (day.isBooked) {
                             return (
-                                <DisabledDate key={index}>{day.date}</DisabledDate>
+                                <DisabledDate key={index}>
+                                    {day.date}
+                                </DisabledDate>
                             );
                         }
 
