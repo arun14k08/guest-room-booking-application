@@ -3,6 +3,7 @@ import {
     add,
     eachDayOfInterval,
     endOfMonth,
+    endOfWeek,
     format,
     getMonth,
     getYear,
@@ -11,6 +12,7 @@ import {
     parseISO,
     startOfMonth,
     startOfToday,
+    startOfWeek,
 } from "date-fns";
 import { DayName, DisabledDate, SelectableDate } from "../lib/UIComponents";
 import { useParams } from "react-router";
@@ -41,10 +43,11 @@ const CalendarV2 = () => {
         setMonth(format(nextMonth, "MMM-yyyy"));
     };
 
-    let days = eachDayOfInterval({
-        start: startOfMonth(parseISO(month)),
-        end: endOfMonth(parseISO(month)),
+    const days = eachDayOfInterval({
+        start: startOfWeek(startOfMonth(parse(month, "MMM-yyyy", new Date()))),
+        end: endOfWeek(endOfMonth(parse(month, "MMM-yyyy", new Date()))),
     });
+    console.log(days);
 
     days.forEach((day) => {
         // assign date to the object
