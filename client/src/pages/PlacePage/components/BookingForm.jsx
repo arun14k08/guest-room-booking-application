@@ -70,7 +70,18 @@ const BookingForm = ({
                     maximumBookingDays={place?.maximumBooking}
                     bookings={bookings}
                 /> */}
-                <CalendarV2 />
+                <CalendarV2
+                    checkInDate={checkInDate}
+                    setCheckInDate={setCheckInDate}
+                    checkOutDate={checkOutDate}
+                    setCheckOutDate={setCheckOutDate}
+                    setTotalDays={setTotalDays}
+                    setTotalPrice={setTotalPrice}
+                    price={place?.price}
+                    minimumBookingDays={place?.minimumBooking}
+                    maximumBookingDays={place?.maximumBooking}
+                    bookings={bookings}
+                />
             </div>
             <div className={`${checkOutDate ? "visible" : "hidden"}`}>
                 <label htmlFor="guests">

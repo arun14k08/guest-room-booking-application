@@ -1,6 +1,7 @@
 import { LeftIcon, RightIcon } from "../assets/SVGAssets";
 import {
     add,
+    differenceInDays,
     eachDayOfInterval,
     endOfMonth,
     endOfToday,
@@ -10,6 +11,7 @@ import {
     getMonth,
     getYear,
     isEqual,
+    isFuture,
     isPast,
     isWithinInterval,
     parse,
@@ -21,27 +23,30 @@ import {
 } from "date-fns";
 import {
     BookedDate,
-    CheckOutOnlyDate,
+    CheckInDate,
+    CheckOutDate,
     DayName,
     DisabledDate,
     SelectableDate,
+    SelectedDate,
 } from "../lib/UIComponents";
 import { useParams } from "react-router";
 import { useEffect, useState } from "react";
 import axios from "axios";
-const CalendarV2 = () => {
+const CalendarV2 = ({
+    checkInDate,
+    setCheckInDate,
+    checkOutDate,
+    setCheckOutDate,
+    setTotalDays,
+    setTotalPrice,
+    price,
+    minimumBookingDays,
+    maximumBookingDays,
+    bookings,
+}) => {
     let today = startOfToday();
-    const { id } = useParams();
-    const [bookings, setBookings] = useState([]);
     const [month, setMonth] = useState(format(today, "MMM-yyyy"));
-    const [checkInDate, setCheckInDate] = useState();
-    const [checkOutDate, setCheckOutDate] = useState();
-    useEffect(() => {
-        axios.get(`/old-bookings/${id}`).then((response) => {
-            setBookings(response.data.bookings);
-            handleBookings({ bookings: response.data.bookings });
-        });
-    }, []);
 
     const handleNextMonth = (event) => {
         event.preventDefault();
@@ -61,28 +66,33 @@ const CalendarV2 = () => {
         end: endOfWeek(endOfMonth(parse(month, "MMM-yyyy", new Date()))),
     });
     // console.log(days);
+
+    useEffect(() => {
+        setDays();
+        const totalDays = differenceInDays(checkOutDate, checkInDate);
+        setTotalDays(totalDays);
+        setTotalPrice(totalDays * price);
+    }, [checkInDate, checkOutDate]);
+
     const setDays = () => {
         // block already booked dates
-        bookings.forEach((booking, index) => {
-            console.log(booking);
-            const checkInDate = booking.checkInDate;
-            const checkOutDate = booking.checkOutDate;
-            days.forEach((day) => {
-                console.log(day);
-                if (isEqual(day, parseISO(checkInDate))) {
-                    day["isCheckOutOnly"] = true;
-                }
-                if (
-                    isWithinInterval(day, {
-                        start: add(checkInDate, { days: 0 }),
-                        end: add(checkOutDate, { days: -1 }),
-                    })
-                ) {
-                    day["isBooked"] = true;
-                }
-            });
-            console.log(days);
-        });
+        // bookings.forEach((booking, index) => {
+        //     console.log(booking);
+        //     const checkInDate = booking.checkInDate;
+        //     const checkOutDate = booking.checkOutDate;
+        //     days.forEach((day) => {
+        //         console.log(day);
+        //         if (
+        //             isWithinInterval(day, {
+        //                 start: checkInDate,
+        //                 end: checkOutDate,
+        //             })
+        //         ) {
+        //             day["isBooked"] = true;
+        //         }
+        //     });
+        //     console.log(days);
+        // });
         days.forEach((day) => {
             // assign date to the object
             day["date"] = day.getDate();
@@ -90,19 +100,47 @@ const CalendarV2 = () => {
             if (isPast(day)) {
                 day["isDisabled"] = true;
             }
+            console.log(day, checkInDate);
+            // check in date
+            if (isEqual(new Date(day), parseISO(checkInDate))) {
+                day["isCheckIn"] = true;
+            }
+            // checkout date
+            if (isEqual(new Date(day), parseISO(checkOutDate))) {
+                day["isCheckOut"] = true;
+            }
+            // between check-in and check-out date
+            if (
+                isWithinInterval(day, {
+                    start: new Date(checkInDate),
+                    end: add(new Date(checkOutDate), { days: -1 }),
+                })
+            ) {
+                day["isSelected"] = true;
+            }
         });
     };
     setDays();
 
-    const handleBookings = ({ bookings }) => {
-        console.log(bookings);
-    };
-
     const handleDateSelect = (event, day) => {
         event.preventDefault();
+        if (!checkInDate) {
+            setCheckInDate(format(day, "yyyy-MM-dd"));
+            return;
+        }
+        if (!checkOutDate) {
+            setCheckOutDate(format(day, "yyyy-MM-dd"));
+            return;
+        }
+        if (day < parseISO(checkInDate)) {
+            setCheckInDate(format(day, "yyyy-MM-dd"));
+        }
+        if (day > parseISO(checkOutDate)) {
+            setCheckOutDate(format(day, "yyyy-MM-dd"));
+        }
     };
 
-    // console.log(days);
+    console.log(days);
 
     return (
         <div>
@@ -149,17 +187,33 @@ const CalendarV2 = () => {
                                 </DisabledDate>
                             );
                         }
-                        
+
                         if (day.isBooked) {
                             return (
                                 <BookedDate key={index}>{day.date}</BookedDate>
                             );
                         }
-                        if (day.isCheckOutOnly) {
+
+                        if (day.isCheckIn) {
                             return (
-                                <CheckOutOnlyDate key={index}>
+                                <CheckInDate key={index}>
                                     {day.date}
-                                </CheckOutOnlyDate>
+                                </CheckInDate>
+                            );
+                        }
+                        if (day.isSelected) {
+                            return (
+                                <SelectedDate key={index}>
+                                    {day.date}
+                                </SelectedDate>
+                            );
+                        }
+
+                        if (day.isCheckOut) {
+                            return (
+                                <CheckOutDate key={index}>
+                                    {day.date}
+                                </CheckOutDate>
                             );
                         }
 

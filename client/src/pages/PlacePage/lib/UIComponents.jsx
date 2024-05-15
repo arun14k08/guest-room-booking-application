@@ -77,7 +77,7 @@ export const CheckOutOnlyDate = ({ children }) => {
 
 export const BookedDate = ({ children }) => {
     return (
-        <p className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full ring-black bg-primary">
+        <p className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full ring-black bg-red-200">
             <s className="text-white">{children}</s>
         </p>
     );
