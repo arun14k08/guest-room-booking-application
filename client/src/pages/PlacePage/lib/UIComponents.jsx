@@ -2,56 +2,42 @@ export const BlankDate = () => {
     return <div className="px-2 py-1">&nbsp;</div>;
 };
 
-export const DisabledDate = ({ index }) => {
+export const DisabledDate = ({ children }) => {
     return (
         <p className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full ring-black">
-            <s className="text-slate-300">{index + 1}</s>
+            <s className="text-slate-300">{children}</s>
         </p>
     );
 };
 
-export const SelectableDate = ({ index, month, year, handleDateSelect }) => {
+export const SelectableDate = ({ children }) => {
     return (
-        <button
-            className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full hover:bg-slate-200  hover:ring-1 hover:ring-black"
-            onClick={(event) => {
-                event.preventDefault();
-                handleDateSelect({
-                    day: index + 1,
-                    month,
-                    year,
-                    options: { isCheckOutOnly: false },
-                });
-            }}
-        >
-            {index + 1}
+        <button className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full hover:bg-slate-200  hover:ring-1 hover:ring-black">
+            {children}
         </button>
     );
 };
 
-export const SelectedDate = ({ index }) => {
+export const SelectedDate = ({ children }) => {
     return (
         <p className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer -mx-2 bg-slate-400 text-white">
-            {index + 1}
+            {children}
         </p>
     );
 };
 
-export const CheckInDate = ({ index }) => {
+export const CheckInDate = ({ children }) => {
     return (
         <p className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full bg-gradient-to-r from-black to-slate-400 text-white rounded-r-none">
-            {index + 1}
+            {children}
         </p>
     );
 };
 
-export const CheckOutDate = ({ index }) => {
+export const CheckOutDate = ({ children }) => {
     return (
-        <p
-            key={index}
-            className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full bg-gradient-to-l from-black to-slate-400 text-white rounded-l-none"
-        >
-            {index + 1}
+        <p className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full bg-gradient-to-l from-black to-slate-400 text-white rounded-l-none">
+            {children}
         </p>
     );
 };
@@ -76,29 +62,26 @@ export const ClearDates = ({
     );
 };
 
-export const CheckOutOnlyDate = ({ index, handleDateSelect, month, year }) => {
+export const CheckOutOnlyDate = ({ children }) => {
     return (
-        <button
-            onClick={(event) => {
-                event.preventDefault();
-                handleDateSelect({
-                    day: index + 1,
-                    month,
-                    year,
-                    options: { isCheckOutOnly: true },
-                });
-            }}
-            className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full bg-slate-200 ring-1 ring-slate-300 text-slate-400"
-        >
-            {index + 1}
+        <button className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full bg-slate-200 ring-1 ring-slate-300 text-slate-400">
+            {children}
         </button>
     );
 };
 
-export const BookedDate = ({ index }) => {
+export const BookedDate = ({ children }) => {
     return (
         <p className="px-5 py-3 flex transition-all  justify-center items-center cursor-pointer rounded-full ring-black bg-primary">
-            <s className="text-white">{index + 1}</s>
+            <s className="text-white">{children}</s>
+        </p>
+    );
+};
+
+export const DayName = ({ children }) => {
+    return (
+        <p className="px-5 py-3 flex transition-all  justify-center items-center bg-slate-200">
+            {children}
         </p>
     );
 };
