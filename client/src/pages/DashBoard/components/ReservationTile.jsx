@@ -1,7 +1,6 @@
 import { CalendarIcon, MobileIcon, UserIconSmall } from "../assets/SVGAssets";
 
 const ReservationTile = ({ reservation, place, user }) => {
-    console.log(reservation, place, user);
     return (
         <div className="bg-slate-200 px-8 py-6 rounded-lg flex gap-6">
             <div className="w-[300px] h-[200px] flex justify-center items-center rounded-lg overflow-hidden m-1">

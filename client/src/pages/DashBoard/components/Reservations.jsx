@@ -21,7 +21,13 @@ const Reservations = () => {
 
     return (
         <div className="mt-12 mx-24 flex flex-col gap-4">
-            {reservations?.length === 0 && "No Reservations"}
+            {reservations?.length === 0 ? (
+                <span className="text-2xl font-semibold">No Reservations</span>
+            ) : (
+                <span className="text-2xl font-semibold">
+                    My Reservations ({reservations?.length})
+                </span>
+            )}
             {reservations?.map((reservation) => {
                 return (
                     <ReservationTile
