@@ -5,14 +5,9 @@ import {
     differenceInDays,
     eachDayOfInterval,
     endOfMonth,
-    endOfToday,
     endOfWeek,
-    endOfYesterday,
     format,
-    getMonth,
-    getYear,
     isEqual,
-    isFuture,
     isPast,
     isWithinInterval,
     parse,
@@ -20,7 +15,6 @@ import {
     startOfMonth,
     startOfToday,
     startOfWeek,
-    startOfYesterday,
 } from "date-fns";
 import {
     CheckInDate,
@@ -53,24 +47,26 @@ const CalendarV2 = ({
     const {
         alert: { setAlertMessage, setAlertType },
     } = useContext(UserContext);
+
+    // go to next month
     const handleNextMonth = (event) => {
         event.preventDefault();
         let currentMonth = parse(month, "MMM-yyyy", new Date());
         let nextMonth = add(currentMonth, { months: 1 });
         setMonth(format(nextMonth, "MMM-yyyy"));
     };
+    // go to previous month
     const handlePreviousMonth = (event) => {
         event.preventDefault();
         let currentMonth = parse(month, "MMM-yyyy", new Date());
         let nextMonth = add(currentMonth, { months: -1 });
         setMonth(format(nextMonth, "MMM-yyyy"));
     };
-
+    // generate dates of the current month
     const days = eachDayOfInterval({
         start: startOfWeek(startOfMonth(parse(month, "MMM-yyyy", new Date()))),
         end: endOfWeek(endOfMonth(parse(month, "MMM-yyyy", new Date()))),
     });
-    // console.log(days);
 
     useEffect(() => {
         const totalDays = differenceInDays(checkOutDate, checkInDate);
@@ -80,9 +76,11 @@ const CalendarV2 = ({
         setTotalDays(totalDays);
         setTotalPrice(totalDays * price);
         setMaximumDateToBook(maxDateToBeBooked);
+        // if checkout date beyond max date is selected
         if (parseISO(checkOutDate) > maxDateToBeBooked) {
             setCheckOutDate(format(maxDateToBeBooked, "yyyy-MM-dd"));
         }
+        // change max date when selecting check out only date
         if (checkOutOnlyDates?.includes(checkOutDate)) {
             setMaximumDateToBook(new Date(checkOutDate));
         }
@@ -90,16 +88,13 @@ const CalendarV2 = ({
     }, [checkInDate, checkOutDate]);
 
     const setDays = () => {
+        // ** setDays function is to add usable {keys:value} pairs in the generated dates array **
+        // Eg: isDisabled, isBooked, isCheckOutOnly, etc ...
+
         // block already booked dates
         bookings.forEach((booking, index) => {
-            // console.log(booking);
             days.forEach((day) => {
-                // console.log("each day", day);
-                // console.log(
-                //     "checkIn - " + new Date(booking.checkInDate),
-                //     new Date(day)
-                // );
-                // console.log(isEqual(day, booking.checkInDate));
+                // handle check out only dates
                 if (isEqual(new Date(day), parseISO(booking.checkInDate))) {
                     day["isCheckOutOnly"] = true;
                     if (
@@ -111,6 +106,8 @@ const CalendarV2 = ({
                         ]);
                     }
                 }
+
+                // handle overlapping of ranges and dates
                 if (
                     isWithinInterval(day, {
                         start: add(booking.checkInDate, { days: 0 }),
@@ -120,7 +117,6 @@ const CalendarV2 = ({
                     day["isBooked"] = true;
                 }
             });
-
             if (
                 areIntervalsOverlapping(
                     { start: checkInDate, end: checkOutDate },
@@ -131,7 +127,6 @@ const CalendarV2 = ({
                     format(add(booking.checkInDate, { days: 0 }), "yyyy-MM-dd")
                 );
             }
-
             if (
                 isWithinInterval(new Date(checkInDate), {
                     start: new Date(booking.checkInDate),
@@ -150,8 +145,8 @@ const CalendarV2 = ({
             ) {
                 setCheckOutDate(format(booking.checkInDate, "yyyy-MM-dd"));
             }
-            // console.log(days);
         });
+        // iterate over all the days and add required {key:value} pairs
         days.forEach((day, index) => {
             // assign date to the object
             day["date"] = day.getDate();
@@ -174,19 +169,28 @@ const CalendarV2 = ({
                     end: add(new Date(checkOutDate), { days: -1 }),
                 })
             ) {
+                // if between day is beyond a check-out only date
+                if (checkOutOnlyDates?.includes(format(day, "yyyy-MM-dd"))) {
+                    setCheckOutDate(format(day, "yyyy-MM-dd"));
+                }
                 day["isSelected"] = true;
             }
             // dates beyond maximum booking date will be disabled
             if (day > maximumDateToBook) {
                 day["isDisabled"] = true;
             }
-            if (day.isCheckOutOnly) {
+            // a special edge case for checkout-only date
+            if (day?.isCheckOutOnly && index < days.length - 1) {
                 const yesterday = days[index - 1];
                 const tomorrow = days[index + 1];
-                if (yesterday.isDisabled && tomorrow.isDisabled) {
-                    day["isDisabled"] = true;
-                }
-                if (yesterday.isCheckOutOnly && tomorrow.isCheckOutOnly) {
+                if (
+                    (yesterday?.isDisabled ||
+                        yesterday?.isBooked ||
+                        yesterday?.isCheckOutOnly) &&
+                    (tomorrow?.isDisabled ||
+                        tomorrow?.isBooked ||
+                        tomorrow?.isCheckOutOnly)
+                ) {
                     day["isDisabled"] = true;
                 }
             }
@@ -228,8 +232,6 @@ const CalendarV2 = ({
         }
     };
 
-    console.log(days);
-
     return (
         <div>
             <div className="flex gap-3 justify-between items-center py-2 px-4 transition-all">
@@ -268,7 +270,7 @@ const CalendarV2 = ({
                 </div>
                 <div className="grid grid-cols-7 gap-2">
                     {days.map((day, index) => {
-                        if (day.isDisabled) {
+                        if (day?.isDisabled) {
                             return (
                                 <DisabledDate key={index}>
                                     {day.date}
@@ -284,7 +286,7 @@ const CalendarV2 = ({
                             );
                         }
 
-                        if (day.isBooked) {
+                        if (day?.isBooked) {
                             return (
                                 <DisabledDate key={index}>
                                     {day.date}
@@ -292,14 +294,14 @@ const CalendarV2 = ({
                             );
                         }
 
-                        if (day.isCheckIn) {
+                        if (day?.isCheckIn) {
                             return (
                                 <CheckInDate key={index}>
                                     {day.date}
                                 </CheckInDate>
                             );
                         }
-                        if (day.isSelected) {
+                        if (day?.isSelected) {
                             return (
                                 <SelectedDate key={index}>
                                     {day.date}
@@ -307,7 +309,7 @@ const CalendarV2 = ({
                             );
                         }
 
-                        if (day.isCheckOut) {
+                        if (day?.isCheckOut) {
                             return (
                                 <CheckOutDate key={index}>
                                     {day.date}
@@ -315,7 +317,7 @@ const CalendarV2 = ({
                             );
                         }
 
-                        if (day.isCheckOutOnly) {
+                        if (day?.isCheckOutOnly) {
                             return (
                                 <CheckOutOnlyDate
                                     key={index}
@@ -342,7 +344,7 @@ const CalendarV2 = ({
             <ClearDates
                 setCheckInDate={setCheckInDate}
                 setCheckOutDate={setCheckOutDate}
-                // setMaximumDateToCheckOut={setMaximumDateToCheckOut}
+                setMaximumDateToBook={setMaximumDateToBook}
             />
         </div>
     );

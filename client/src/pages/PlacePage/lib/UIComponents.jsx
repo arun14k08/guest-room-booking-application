@@ -50,14 +50,14 @@ export const CheckOutDate = ({ children }) => {
 export const ClearDates = ({
     setCheckInDate,
     setCheckOutDate,
-    setMaximumDateToCheckOut,
+    setMaximumDateToBook,
 }) => {
     return (
         <button
             onClick={(event) => {
                 setCheckInDate("");
                 setCheckOutDate("");
-                setMaximumDateToCheckOut("");
+                setMaximumDateToBook(null);
                 event.preventDefault();
             }}
             className="underline font-semibold mt-2 hover:bg-slate-200 rounded-lg px-2 py-1"
