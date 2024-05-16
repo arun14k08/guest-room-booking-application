@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { Navigate, useParams } from "react-router";
 import { LocationIcon } from "../../assets/SVGAssets";
 import PhotoPreview from "./components/PhotoPreview";
 import Calendar from "./components/Calendar";
@@ -21,6 +21,7 @@ const PlacePage = () => {
     const [totalPrice, setTotalPrice] = useState();
     const [guests, setGuests] = useState();
     const [bookings, setBookings] = useState([]);
+    const [redirect, setRedirect] = useState("");
     // const [isCheckInDateValid, setIsCheckInDateValid] = useState();
     const {
         alert: { setAlertMessage, setAlertType },
@@ -60,8 +61,17 @@ const PlacePage = () => {
                 const { data } = response;
                 setAlertMessage(data.message);
                 setAlertType(data.type);
+                setTimeout(() => {
+                    if (data.type === "success") {
+                        setRedirect("/account");
+                    }
+                }, 1000);
             });
     };
+
+    if (redirect) {
+        return <Navigate to={redirect} />;
+    }
 
     return (
         <div className="mx-24 mb-12">

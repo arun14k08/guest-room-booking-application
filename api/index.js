@@ -432,6 +432,25 @@ app.get("/old-bookings/:id", async (req, res) => {
     res.status(200).json({ bookings, message: "Bookings found", type: "info" });
 });
 
+app.get("/bookings", (req, res) => {
+    const { authToken } = req.cookies;
+    if (!authToken) {
+        res.status(200).json({
+            message: "you are not authorized to access",
+            type: "warning",
+        });
+    }
+    jwt.verify(authToken, jwtSecretKey, cookieOptions, async (err, data) => {
+        if (err) throw err;
+        const { id } = data;
+        let bookings = await Booking.find({ user: id })
+            .populate("owner")
+            .populate("place");
+
+        res.status(200).json({ bookings });
+    });
+});
+
 // starting the server
 let PORT = 3000;
 app.listen(PORT, () => {
