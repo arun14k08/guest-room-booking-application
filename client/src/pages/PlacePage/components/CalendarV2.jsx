@@ -213,9 +213,7 @@ const CalendarV2 = ({
         if (!checkInDate) {
             setCheckInDate(format(day, "yyyy-MM-dd"));
             const checkOut = add(day, {
-                days:
-                    Number(minimumBookingDays) -
-                    (minimumBookingDays === 1 ? 0 : -1),
+                days: Number(minimumBookingDays),
             });
             setCheckOutDate(format(checkOut, "yyyy-MM-dd"));
             return;

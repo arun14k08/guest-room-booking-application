@@ -17,13 +17,12 @@ const PhotoPreview = ({ photos }) => {
                 setShowGallery(true);
             }}
         >
-            <div className="flex justify-center items-center w-full h-[480px]"> 
-
-            <img
-                src={"http://localhost:3000/uploads/" + photos[0]}
-                alt="photo"
-                className="object-cover min-h-[480px]"
-            />
+            <div className="flex justify-center items-center w-full h-[480px]">
+                <img
+                    src={"http://localhost:3000/uploads/" + photos[0]}
+                    alt="photo"
+                    className="object-cover min-h-[480px]"
+                />
             </div>
             <div className="grid grid-cols-2 gap-2 relative max-h-[480px]">
                 {photos
@@ -36,7 +35,7 @@ const PhotoPreview = ({ photos }) => {
                                 key={index}
                                 src={"http://localhost:3000/uploads/" + photo}
                                 alt="photo"
-                                className="h-full object-cover"
+                                className="h-full aspect-video"
                             />
                         );
                     })}

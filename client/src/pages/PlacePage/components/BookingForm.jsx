@@ -15,6 +15,7 @@ const BookingForm = ({
     place,
     handleSubmit,
     bookings,
+    isCheckInSelected,
 }) => {
     return (
         <form
@@ -29,7 +30,7 @@ const BookingForm = ({
                     Check In:
                     <input
                         id="check-in"
-                        type="text"
+                        type="date"
                         name="checkIn"
                         value={checkInDate}
                         placeholder="YYYY-MM-DD"
@@ -40,11 +41,12 @@ const BookingForm = ({
                         required
                     />
                 </label>
-                <label htmlFor="checkout">
-                    Check Out:
+                <label htmlFor="checkout" className="flex flex-col">
+                    <span>Check Out: </span>
+
                     <input
                         id="checkout"
-                        type="text"
+                        type="date"
                         name="checkOut"
                         value={checkOutDate}
                         placeholder="YYYY-MM-DD"

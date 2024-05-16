@@ -44,7 +44,6 @@ const DashBoard = () => {
 
     return (
         <div className="flex flex-col justify-center items-center">
-           
             <div className="px-8 mt-8 w-full justify-end">
                 <button
                     onClick={() => {
@@ -57,6 +56,12 @@ const DashBoard = () => {
                 </button>
             </div>
             <div className="flex flex-col gap-4">
+                {places.length > 0 && (
+                    <p className="text-lg font-bold text-right mt-4 mr-8">
+                        Total Places: ({places?.length})
+                    </p>
+                )}
+
                 <Listings
                     places={places}
                     setPlaces={setPlaces}

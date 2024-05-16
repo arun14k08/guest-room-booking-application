@@ -1,3 +1,5 @@
+import { add, startOfToday } from "date-fns";
+
 export const BlankDate = () => {
     return <div className="px-2 py-1">&nbsp;</div>;
 };
@@ -55,10 +57,10 @@ export const ClearDates = ({
     return (
         <button
             onClick={(event) => {
+                event.preventDefault();
                 setCheckInDate("");
                 setCheckOutDate("");
-                setMaximumDateToBook(null);
-                event.preventDefault();
+                setMaximumDateToBook(add(startOfToday, { years: 1 }));
             }}
             className="underline font-semibold mt-2 hover:bg-slate-200 rounded-lg px-2 py-1"
         >

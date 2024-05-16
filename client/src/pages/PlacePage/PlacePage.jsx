@@ -5,7 +5,7 @@ import { LocationIcon } from "../../assets/SVGAssets";
 import PhotoPreview from "./components/PhotoPreview";
 import Calendar from "./components/Calendar";
 import { UserContext } from "../../context/UserContextProvider";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 import BookingForm from "./components/BookingForm";
 import { ProfileIcon } from "../../components/NavBar/assets/SVGAssets";
 import { ProfileIconBig } from "./assets/SVGAssets";
@@ -15,6 +15,7 @@ const PlacePage = () => {
     const { id } = useParams();
     const [place, setPlace] = useState();
     const [checkInDate, setCheckInDate] = useState("");
+    const [isCheckInSelected, setIsCheckInSelected] = useState(false);
     const [checkOutDate, setCheckOutDate] = useState("");
     const [totalDays, setTotalDays] = useState();
     const [totalPrice, setTotalPrice] = useState();
@@ -35,6 +36,14 @@ const PlacePage = () => {
             });
         });
     }, []);
+
+    // useEffect(() => {
+    //     if (isValid(new Date(checkInDate))) {
+    //         setIsCheckInSelected(true);
+    //     } else {
+    //         setIsCheckInSelected(false);
+    //     }
+    // }, [checkInDate]);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -109,8 +118,13 @@ const PlacePage = () => {
                     </div>
                 </div>
                 <div className="px-6 py-8 rounded-lg shadow-2xl ring-1 ring-slate-300">
-                    <div>
-                        <p><span className="text-3xl font-bold" >₹ {place?.price} </span>night</p>
+                    <div className="mb-6">
+                        <p>
+                            <span className="text-3xl font-bold">
+                                ₹ {place?.price}{" "}
+                            </span>
+                            night
+                        </p>
                     </div>
                     <BookingForm
                         checkInDate={checkInDate}
@@ -126,6 +140,7 @@ const PlacePage = () => {
                         place={place}
                         handleSubmit={handleSubmit}
                         bookings={bookings}
+                        isCheckInSelected={isCheckInSelected}
                     />
                 </div>
             </div>
