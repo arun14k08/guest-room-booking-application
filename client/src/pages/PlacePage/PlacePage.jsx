@@ -64,20 +64,22 @@ const PlacePage = () => {
                 {/* image gallery */}
                 {place && <PhotoPreview photos={place.photos} />}
             </div>
-            <div className="grid grid-cols-3 gap-8 justify-between mt-8">
+            <div className="grid grid-cols-3 gap-4 justify-between mt-8">
                 <div className="col-span-2">
                     <div className="flex flex-col gap-3 px-4 py-2">
                         <p className="text-slate-400">Rented By</p>
-                        <div className="flex gap-3 px-4 py-2 rounded-lg bg-slate-300 max-w-[80%]">
+                        <div className="flex gap-3 px-4 py-2  border-b-2 border-slate-300 max-w-[80%]">
                             <ProfileIconBig />
                             <div>
                                 <p className="font-bold text-lg">
                                     {place?.owner?.name}
                                 </p>
-                                <p>{place?.owner?.email}</p>
+                                <p>Host</p>
                             </div>
                         </div>
-                        <p className="max-w-[80%] text-justify">{place?.description}</p>
+                        <p className="max-w-[80%] text-justify">
+                            {place?.description}
+                        </p>
                     </div>
                     <div className="flex ml-2 mb-2 py-4 px-6 gap-6 bg-slate-300 rounded-full mt-6 font-semibold text-[#525252] w-fit">
                         <p className="text-[16px]">₹ {place?.price}</p>
@@ -96,8 +98,20 @@ const PlacePage = () => {
                             Beds: {place?.beds}
                         </p>
                     </div>
+                    <div className="font-semibold text-lg">
+                        <p>
+                            Minimum No. of Days to Book: {place?.minimumBooking}
+                        </p>
+                        <p>
+                            Maximum No. of Days can be Booked:{" "}
+                            {place?.maximumBooking}
+                        </p>
+                    </div>
                 </div>
-                <div>
+                <div className="px-6 py-8 rounded-lg shadow-2xl ring-1 ring-slate-300">
+                    <div>
+                        <p><span className="text-3xl font-bold" >₹ {place?.price} </span>night</p>
+                    </div>
                     <BookingForm
                         checkInDate={checkInDate}
                         checkOutDate={checkOutDate}
