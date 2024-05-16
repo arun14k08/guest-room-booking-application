@@ -3,16 +3,15 @@ A web application in which, house owners can list their rentals and customers ca
 
 ## TODO LIST
 
-- [ ] Home Page
+- [x] Home Page
 
-- [ ] Customers
+- [x] Customers
     - [x] Register User
     - [x] Login User
-    - [ ]  Booking Functionality
-    - [ ] Availability Calendar 
-    - [ ] Past bookings page
+    - [x]  Booking Functionality
+    - [x] Availability Calendar 
 
-- [ ] House owners
+- [x] House owners
     - [x] Register User
     - [x] Login User
     - [x] Create a Rental Listing 
@@ -20,4 +19,4 @@ A web application in which, house owners can list their rentals and customers ca
         - [x] add photos
     - [x] edit a Rental Listing 
     - [x] delete a Rental Listing 
-    - [ ] Rental report page
+    - [x] Reservations Page
