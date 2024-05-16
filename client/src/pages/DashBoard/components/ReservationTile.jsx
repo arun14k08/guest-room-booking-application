@@ -34,7 +34,7 @@ const ReservationTile = ({ reservation, place, user }) => {
                 </p>
 
                 <div className="flex gap-2 font-bold px-2 py-1  bg-primary rounded-lg text-white w-fit">
-                    {"₹ " + reservation.price}
+                    {"₹ " + reservation?.price?.toLocaleString()}
                 </div>
             </div>
         </div>

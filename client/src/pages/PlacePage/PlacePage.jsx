@@ -91,7 +91,9 @@ const PlacePage = () => {
                         </p>
                     </div>
                     <div className="flex ml-2 mb-2 py-4 px-6 gap-6 bg-slate-300 rounded-full mt-6 font-semibold text-[#525252] w-fit">
-                        <p className="text-[16px]">₹ {place?.price}</p>
+                        <p className="text-[16px]">
+                            ₹ {place?.price?.toLocaleString()}
+                        </p>
                         <div className="w-[1px] -my-4 bg-slate-500 rounded-md">
                             &nbsp;
                         </div>
@@ -112,7 +114,7 @@ const PlacePage = () => {
                             Minimum No. of Days to Book: {place?.minimumBooking}
                         </p>
                         <p>
-                            Maximum No. of Days can be Booked:{" "}
+                            Maximum No. of Days can be Booked:
                             {place?.maximumBooking}
                         </p>
                     </div>
@@ -121,7 +123,7 @@ const PlacePage = () => {
                     <div className="mb-6">
                         <p>
                             <span className="text-3xl font-bold">
-                                ₹ {place?.price}{" "}
+                                ₹ {place?.price?.toLocaleString()}
                             </span>
                             night
                         </p>

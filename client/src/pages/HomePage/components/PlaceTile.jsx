@@ -34,7 +34,10 @@ const PlaceTile = ({ place }) => {
                     {place.name}
                 </h2>
                 <p className="text-[16px]">
-                    <span className="font-bold">₹ {place.price} </span> night
+                    <span className="font-bold">
+                        ₹ {place?.price?.toLocaleString()}
+                    </span>
+                    night
                 </p>
             </div>
         </div>

@@ -56,7 +56,7 @@ const DashBoard = () => {
                 </button>
             </div>
             <div className="flex flex-col gap-4">
-                {places.length > 0 && (
+                {places?.length > 0 && (
                     <p className="text-lg font-bold text-right mt-4 mr-8">
                         Total Places: ({places?.length})
                     </p>
