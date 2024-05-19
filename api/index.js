@@ -85,46 +85,54 @@ app.post("/register", async (req, res) => {
 
 // login user
 app.post("/login", async (req, res) => {
-    const { email, password } = req.body;
-    // checking if the email is correct or not
-    const user = await User.findOne({ email });
-    if (!user) {
-        return res.status(200).json({
-            message: "User does not exists",
-            type: "warning",
-            user: null,
-        });
-    }
-    // checking the password with the hashed password in the database
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
-    if (!isPasswordCorrect) {
-        return res.status(200).json({
-            message: "Incorrect password",
-            type: "warning",
-            user: null,
-        });
-    }
-    // if everything is ok then letting the user to log in
-    jwt.sign(
-        { name: user.name, email: user.email, id: user._id },
-        jwtSecretKey,
-        {},
-        async (err, token) => {
-            if (err) throw err;
-            const { name, email, role } = await User.findById(user.id);
-            res.cookie("authToken", token, cookieOptions)
-                .status(200)
-                .json({
-                    message: "Logged in as " + user.name,
-                    type: "success",
-                    user: {
-                        name,
-                        email,
-                        role,
-                    },
-                });
+    try {
+        const { email, password } = req.body;
+        // checking if the email is correct or not
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(200).json({
+                message: "User does not exists",
+                type: "warning",
+                user: null,
+            });
         }
-    );
+        // checking the password with the hashed password in the database
+        const isPasswordCorrect = await bcrypt.compare(password, user.password);
+        if (!isPasswordCorrect) {
+            return res.status(200).json({
+                message: "Incorrect password",
+                type: "warning",
+                user: null,
+            });
+        }
+        // if everything is ok then letting the user to log in
+        jwt.sign(
+            { name: user.name, email: user.email, id: user._id },
+            jwtSecretKey,
+            {},
+            async (err, token) => {
+                if (err) throw err;
+                const { name, email, role } = await User.findById(user.id);
+                res.cookie("authToken", token, cookieOptions)
+                    .status(200)
+                    .json({
+                        message: "Logged in as " + user.name,
+                        type: "success",
+                        user: {
+                            name,
+                            email,
+                            role,
+                        },
+                    });
+            }
+        );
+    } catch (err) {
+        console.log("Error: " + err.message);
+        res.status(500).json({
+            message: "Server Error, Please try after some time",
+            type: "error",
+        });
+    }
 });
 
 // get profile of the user by jwt token

@@ -35,9 +35,10 @@ const LoginPage = () => {
                     }, 1000);
                 }
             })
-            .catch((error) => {
-                setAlertMessage("An error occurred. Please try again.");
-                setAlertType("error" + error);
+            .catch((err) => {
+                const message = err.response.data.message;
+                setAlertMessage(message);
+                setAlertType("error");
             })
             .finally(() => {
                 setFormLoading(false);
