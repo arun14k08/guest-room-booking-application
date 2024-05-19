@@ -10,7 +10,6 @@ import { UserContext } from "../../../context/UserContextProvider";
 const Listings = ({
     places,
     redirectToEditPage,
-    setReady,
     setPlaces,
     ready,
 }) => {

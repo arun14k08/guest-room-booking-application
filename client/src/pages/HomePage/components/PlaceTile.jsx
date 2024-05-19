@@ -30,7 +30,7 @@ const PlaceTile = ({ place }) => {
                 <p className="underline underline-offset-1 capitalize flex gap-1 items-center">
                     <LocationIcon /> {place.location}
                 </p>
-                <h2 className="font-bold capitalize text-[20px] text-slate-600">
+                <h2 className="font-bold capitalize text-[20px] text-slate-600 line-clamp-1">
                     {place.name}
                 </h2>
                 <p className="text-[16px]">
