@@ -412,7 +412,7 @@ app.delete("/place/:id", async (req, res) => {
         }
         res.status(200).json({
             message: "Place deleted successfully",
-            type: "warning",
+            type: "success",
             places: null,
         });
     } catch (err) {

@@ -7,28 +7,29 @@ import DeletePlaceModal from "./DeletePlaceModal";
 import axios from "axios";
 import { UserContext } from "../../../context/UserContextProvider";
 
-const Listings = ({
-    places,
-    redirectToEditPage,
-    setPlaces,
-    ready,
-}) => {
+const Listings = ({ places, redirectToEditPage, setPlaces, ready }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const {
         alert: { setAlertMessage, setAlertType },
     } = useContext(UserContext);
 
     const deletePlace = (id) => {
-        axios.delete("/place/" + id).then((response) => {
-            if (response.data.type === "success") {
-                const newPlaces = places.filter((place) => {
-                    return place._id !== id;
-                });
-                setPlaces(newPlaces);
-            }
-            setAlertMessage(response.data.message);
-            setAlertType(response.data.type);
-        });
+        axios
+            .delete("/place/" + id)
+            .then((response) => {
+                if (response.data.type === "success") {
+                    const newPlaces = places.filter((place) => {
+                        return place._id !== id;
+                    });
+                    setPlaces(newPlaces);
+                }
+                setAlertMessage(response.data.message);
+                setAlertType(response.data.type);
+            })
+            .catch((err) => {
+                setAlertMessage(err.response.data.message);
+                setAlertType("error");
+            });
     };
 
     if (!ready) {

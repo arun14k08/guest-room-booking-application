@@ -21,6 +21,7 @@ const PlaceForm = () => {
     const {
         user,
         ready,
+        setReady,
         alert: { setAlertMessage, setAlertType },
     } = useContext(UserContext);
     const { id } = useParams();
@@ -84,6 +85,7 @@ const PlaceForm = () => {
         event.preventDefault();
         if (id) {
             // update place
+            setReady(false);
             axios
                 .put("/places/edit", {
                     id,
@@ -108,9 +110,11 @@ const PlaceForm = () => {
                             setRedirect("/dashboard");
                         }
                     }, 1000);
+                    setReady(true);
                 });
         } else {
             // create new place
+            setReady(false);
             axios
                 .post("/places/new", {
                     name,
@@ -134,13 +138,11 @@ const PlaceForm = () => {
                             setRedirect("/dashboard");
                         }
                     }, 1000);
+                    setReady(true);
                 });
         }
     };
 
-    if (!ready) {
-        return <p>Loading...</p>;
-    }
     if (ready && !user) {
         return <Navigate to="/" />;
     }
@@ -230,40 +232,6 @@ const PlaceForm = () => {
                         />
                     </label>
                 </div>
-                {/* <div className="flex gap-8">
-                    <label className="flex flex-col items-center">
-                        Enter the Check In Time
-                        <div className="flex w-32 items-center gap-2">
-                            <input
-                                type="number"
-                                name="checkInHour"
-                                placeholder="HH"
-                            />
-                            :
-                            <input
-                                type="text"
-                                name="checkInMinute"
-                                placeholder="MM"
-                            />
-                        </div>
-                    </label>
-                    <label className="flex flex-col items-center">
-                        Enter the Check Out Time
-                        <div className="flex w-32 items-center gap-2">
-                            <input
-                                type="text"
-                                name="checkOutHour"
-                                placeholder="HH"
-                            />
-                            :
-                            <input
-                                type="text"
-                                name="checkOutMinute"
-                                placeholder="MM"
-                            />
-                        </div>
-                    </label>
-                </div> */}
                 <div className="flex gap-4">
                     <label htmlFor="beds">
                         No of Beds:
@@ -361,7 +329,11 @@ const PlaceForm = () => {
                         </p>
                     )}
                 </div>
-                <button className="button" type="submit">
+                <button  style={{
+                            backgroundColor: `${
+                                !ready ? "#aaa" : "#EB1A40"
+                            }`,
+                        }} disabled={!ready} className="px-4 py-2 rounded-lg text-white " type="submit">
                     {submitText}
                 </button>
             </form>

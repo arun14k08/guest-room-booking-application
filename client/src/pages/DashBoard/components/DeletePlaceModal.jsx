@@ -1,4 +1,3 @@
-import React from "react";
 
 const DeletePlaceModal = ({ setIsModalOpen, deletePlace, placeId }) => {
     return (

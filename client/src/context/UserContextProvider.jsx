@@ -31,7 +31,7 @@ const UserContextProvider = ({ children }) => {
             setAlertMessage("");
             setAlertType("");
         }, alertThreshold);
-    }, [alert]);
+    }, [alertMessage, alertType]);
 
     return (
         <UserContext.Provider

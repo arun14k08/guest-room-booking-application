@@ -3,11 +3,8 @@ import { useContext, useEffect, useState } from "react";
 import { Navigate, useParams } from "react-router";
 import { LocationIcon } from "../../assets/SVGAssets";
 import PhotoPreview from "./components/PhotoPreview";
-import Calendar from "./components/Calendar";
 import { UserContext } from "../../context/UserContextProvider";
-import { format, isValid } from "date-fns";
 import BookingForm from "./components/BookingForm";
-import { ProfileIcon } from "../../components/NavBar/assets/SVGAssets";
 import { ProfileIconBig } from "./assets/SVGAssets";
 import { RoomIcon } from "../DashBoard/assets/SVGAssets";
 import { BedIcon } from "../DashBoard/assets/ImageAssets";
@@ -22,29 +19,41 @@ const PlacePage = () => {
     const [guests, setGuests] = useState();
     const [bookings, setBookings] = useState([]);
     const [redirect, setRedirect] = useState("");
-    // const [isCheckInDateValid, setIsCheckInDateValid] = useState();
+    const [isBookingsReady, setIsBookingsReady] = useState(false);
     const {
+        ready,
+        setReady,
         alert: { setAlertMessage, setAlertType },
     } = useContext(UserContext);
     useEffect(() => {
-        if (!id) {
-            return;
-        }
-        axios.get("/places/" + id).then((response) => {
-            setPlace(response.data.place);
-            axios.get(`/old-bookings/${id}`).then((response) => {
-                setBookings(response.data.bookings);
+        if (!id) return;
+        setReady(false);
+        axios
+            .get("/places/" + id)
+            .then((response) => {
+                setPlace(response.data.place);
+            })
+            .catch((err) => {
+                setAlertMessage(err.response.data.message);
+                setAlertType("error");
+            })
+            .finally(() => {
+                setReady(true);
             });
-        });
+        setIsBookingsReady(false);
+        axios
+            .get(`/old-bookings/${id}`)
+            .then((response) => {
+                setBookings(response.data.bookings);
+            })
+            .catch((err) => {
+                setAlertMessage(err.response.data.message);
+                setAlertType("error");
+            })
+            .finally(() => {
+                setIsBookingsReady(true);
+            });
     }, []);
-
-    // useEffect(() => {
-    //     if (isValid(new Date(checkInDate))) {
-    //         setIsCheckInSelected(true);
-    //     } else {
-    //         setIsCheckInSelected(false);
-    //     }
-    // }, [checkInDate]);
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -68,6 +77,10 @@ const PlacePage = () => {
                 }, 1000);
             });
     };
+
+    if (!ready) {
+        return <p>Loading...</p>;
+    }
 
     if (redirect) {
         return <Navigate to={redirect} />;
@@ -138,22 +151,26 @@ const PlacePage = () => {
                             night
                         </p>
                     </div>
-                    <BookingForm
-                        checkInDate={checkInDate}
-                        checkOutDate={checkOutDate}
-                        totalDays={totalDays}
-                        totalPrice={totalPrice}
-                        guests={guests}
-                        setCheckInDate={setCheckInDate}
-                        setCheckOutDate={setCheckOutDate}
-                        setGuests={setGuests}
-                        setTotalDays={setTotalDays}
-                        setTotalPrice={setTotalPrice}
-                        place={place}
-                        handleSubmit={handleSubmit}
-                        bookings={bookings}
-                        isCheckInSelected={isCheckInSelected}
-                    />
+                    {isBookingsReady ? (
+                        <BookingForm
+                            checkInDate={checkInDate}
+                            checkOutDate={checkOutDate}
+                            totalDays={totalDays}
+                            totalPrice={totalPrice}
+                            guests={guests}
+                            setCheckInDate={setCheckInDate}
+                            setCheckOutDate={setCheckOutDate}
+                            setGuests={setGuests}
+                            setTotalDays={setTotalDays}
+                            setTotalPrice={setTotalPrice}
+                            place={place}
+                            handleSubmit={handleSubmit}
+                            bookings={bookings}
+                            isCheckInSelected={isCheckInSelected}
+                        />
+                    ) : (
+                        <span>Loading...</span>
+                    )}
                 </div>
             </div>
         </div>

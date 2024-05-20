@@ -11,9 +11,8 @@ const Reservations = () => {
             setReady(false);
             axios.get("/reservations").then((response) => {
                 setReservations(response.data.reservations);
-                console.log(response.data.reservations[0].place.photos[0]);
+                setReady(true);
             });
-            setReady(true);
         }
     }, []);
 

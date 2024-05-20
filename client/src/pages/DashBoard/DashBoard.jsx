@@ -13,7 +13,7 @@ const DashBoard = () => {
         alert: { setAlertType, setAlertMessage },
     } = useContext(UserContext);
     const [redirect, setRedirect] = useState("");
-    const [places, setPlaces] = useState(null);
+    const [places, setPlaces] = useState([]);
 
     useEffect(() => {
         setReady(false);
@@ -36,6 +36,9 @@ const DashBoard = () => {
 
     if (redirect) {
         return <Navigate to={redirect} />;
+    }
+    if (!ready) {
+        return <p>Loading...</p>;
     }
 
     if (ready && !user) {
@@ -67,6 +70,7 @@ const DashBoard = () => {
                     setPlaces={setPlaces}
                     ready={ready}
                     setReady={setReady}
+                    setRedirect={setRedirect}
                     redirectToEditPage={redirectToEditPage}
                 />
             </div>

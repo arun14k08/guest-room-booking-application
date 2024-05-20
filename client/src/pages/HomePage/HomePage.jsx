@@ -5,15 +5,28 @@ import axios from "axios";
 import PlaceTile from "./components/PlaceTile";
 
 const HomePage = () => {
-    const { user, ready, setReady } = useContext(UserContext);
+    const {
+        user,
+        ready,
+        setReady,
+        alert: { setAlertMessage, setAlertType },
+    } = useContext(UserContext);
     const [places, setPlaces] = useState([]);
 
     useEffect(() => {
         setReady(false);
-        axios.get("/places").then((response) => {
-            setPlaces(response.data.places);
-        });
-        setReady(true);
+        axios
+            .get("/places")
+            .then((response) => {
+                setPlaces(response.data.places);
+            })
+            .catch((err) => {
+                setAlertMessage(err.response.data.message);
+                setAlertType("error");
+            })
+            .finally(() => {
+                setReady(true);
+            });
     }, []);
 
     if (!ready) {

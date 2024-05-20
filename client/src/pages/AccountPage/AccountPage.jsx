@@ -17,13 +17,21 @@ const AccountPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleLogout = () => {
-        axios.post("/logout").then((response) => {
-            const { data } = response;
-            setAlertType(data.type);
-            setAlertMessage(data.message);
-            setUser(null);
-            setRedirect("/");
-        });
+        axios
+            .post("/logout")
+            .then((response) => {
+                const { data } = response;
+                setAlertType(data.type);
+                setAlertMessage(data.message);
+                setUser(null);
+                setRedirect("/");
+            })
+            .catch((err) => {
+                {
+                    setAlertMessage(err.response.data.message);
+                    setAlertType("error");
+                }
+            });
     };
 
     if (!user) {
