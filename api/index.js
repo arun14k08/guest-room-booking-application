@@ -41,8 +41,13 @@ mongoose
     .connect(process.env.MONGOOSE_CONNECTION_URI)
     .then(() => console.log("connected with database"))
     .catch((err) => {
-        throw err;
+        console.error(err);
     });
+
+const errorJSON = {
+    message: "Server Error, Please try again",
+    type: "error",
+};
 
 //defining various routes
 app.get("/", (req, res) => {
@@ -53,34 +58,39 @@ app.get("/", (req, res) => {
 
 // register a new user
 app.post("/register", async (req, res) => {
-    const { name, email, phone, password, role } = req.body;
-    // checking if there is an user with the same email
-    const user = await User.findOne({ email: email });
-    if (user) {
-        console.log("User already exists");
-        return res.status(200).json({
-            message: "User with the same email already exists",
-            type: "warning",
+    try {
+        const { name, email, phone, password, role } = req.body;
+        // checking if there is an user with the same email
+        const user = await User.findOne({ email: email });
+        if (user) {
+            console.log("User already exists");
+            return res.status(200).json({
+                message: "User with the same email already exists",
+                type: "warning",
+            });
+        }
+        // if user is new then,
+        // the password is hashed with bcrypt
+        const hashedPassword = await bcrypt.hash(password, 10);
+        // saving the new user into the database
+        const newUser = await User.create({
+            name,
+            email,
+            phone,
+            password: hashedPassword,
+            role,
         });
+        console.log("New user created");
+        res.status(200).json({
+            name: newUser.name,
+            email: newUser.email,
+            message: "User created successfully",
+            type: "success",
+        });
+    } catch (err) {
+        res.status(500).json(errorJSON);
+        console.log(err);
     }
-    // if user is new then,
-    // the password is hashed with bcrypt
-    const hashedPassword = await bcrypt.hash(password, 10);
-    // saving the new user into the database
-    const newUser = await User.create({
-        name,
-        email,
-        phone,
-        password: hashedPassword,
-        role,
-    });
-    console.log("New user created");
-    res.status(200).json({
-        name: newUser.name,
-        email: newUser.email,
-        message: "User created successfully",
-        type: "success",
-    });
 });
 
 // login user
@@ -127,34 +137,46 @@ app.post("/login", async (req, res) => {
             }
         );
     } catch (err) {
-        console.log("Error: " + err.message);
-        res.status(500).json({
-            message: "Server Error, Please try after some time",
-            type: "error",
-        });
+        res.status(500).json(errorJSON);
+        console.log(err);
     }
 });
 
 // get profile of the user by jwt token
 app.get("/profile", (req, res) => {
-    const { authToken } = req.cookies;
-    if (!authToken) {
-        return res.status(200).json(null);
+    try {
+        const { authToken } = req.cookies;
+        if (!authToken) {
+            return res.status(200).json(null);
+        }
+        jwt.verify(
+            authToken,
+            jwtSecretKey,
+            cookieOptions,
+            async (err, user) => {
+                if (err) throw err;
+                const { name, email, role } = await User.findById(user.id);
+                res.status(200).json({ name, email, role });
+            }
+        );
+    } catch (err) {
+        res.status(500).json(errorJSON);
+        console.error(err);
     }
-    jwt.verify(authToken, jwtSecretKey, cookieOptions, async (err, user) => {
-        if (err) throw err;
-        const { name, email, role } = await User.findById(user.id);
-        res.status(200).json({ name, email, role });
-    });
 });
 
 // logout user
 app.post("/logout", (req, res) => {
-    res.cookie("authToken", "", {
-        sameSite: "none",
-        secure: true,
-        expires: new Date(0),
-    }).json({ message: "Logged out successfully", type: "success" });
+    try {
+        res.cookie("authToken", "", {
+            sameSite: "none",
+            secure: true,
+            expires: new Date(0),
+        }).json({ message: "Logged out successfully", type: "success" });
+    } catch (err) {
+        res.status(500).json(errorJSON);
+        console.log(err);
+    }
 });
 
 // upload photos of places
@@ -163,90 +185,80 @@ const upload = multer({
     dest: "uploads",
 });
 app.post("/upload", upload.array("photos", 100), (req, res) => {
-    const { authToken } = req.cookies;
-    if (!authToken) {
-        return res.status(200).json({
-            message: "You are not authorized to upload photos",
-            type: "warning",
-        });
-    }
-    jwt.verify(authToken, jwtSecretKey, cookieOptions, (err, data) => {
-        if (err) throw err;
-        const files = req.files;
-        const links = [];
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            const [name, ext] = file.originalname.split(".");
-            const newName = `${file.filename}.${ext}`;
-            fs.renameSync(file.path, `uploads/${newName}`);
-            links.push(newName);
+    try {
+        const { authToken } = req.cookies;
+        if (!authToken) {
+            return res.status(200).json({
+                message: "You are not authorized to upload photos",
+                type: "warning",
+            });
         }
-        let message = "";
-        if (links.length === 1) {
-            message = "Photo Uploaded successfully";
-        } else {
-            message = "Photos Uploaded successfully";
-        }
+        jwt.verify(authToken, jwtSecretKey, cookieOptions, (err, data) => {
+            if (err) throw err;
+            const files = req.files;
+            const links = [];
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const [name, ext] = file.originalname.split(".");
+                const newName = `${file.filename}.${ext}`;
+                fs.renameSync(file.path, `uploads/${newName}`);
+                links.push(newName);
+            }
+            let message = "";
+            if (links.length === 1) {
+                message = "Photo Uploaded successfully";
+            } else {
+                message = "Photos Uploaded successfully";
+            }
 
-        res.status(200).json({
-            links,
-            message: message,
-            type: "success",
+            res.status(200).json({
+                links,
+                message: message,
+                type: "success",
+            });
         });
-    });
+    } catch (err) {
+        res.status(500).json(errorJSON);
+        console.log(err);
+    }
 });
 
 // delete a photo
 app.delete("/photo/:filename", async (req, res) => {
-    const { authToken } = req.cookies;
-    const { filename } = req.params;
-    if (!authToken) {
-        return res.status(200).json({
-            message: "You are not authorized to delete photos",
-            type: "warning",
-        });
-    }
-    jwt.verify(authToken, jwtSecretKey, cookieOptions, async (err, data) => {
-        if (err) throw err;
-        fs.unlink(`uploads/${filename}`, (err) => {
-            if (err) throw err;
-            res.status(200).json({
-                message: "Photo deleted successfully",
+    try {
+        const { authToken } = req.cookies;
+        const { filename } = req.params;
+        if (!authToken) {
+            return res.status(200).json({
+                message: "You are not authorized to delete photos",
                 type: "warning",
             });
-        });
-    });
+        }
+        jwt.verify(
+            authToken,
+            jwtSecretKey,
+            cookieOptions,
+            async (err, data) => {
+                if (err) throw err;
+                fs.unlink(`uploads/${filename}`, (err) => {
+                    if (err) throw err;
+                    res.status(200).json({
+                        message: "Photo deleted successfully",
+                        type: "warning",
+                    });
+                });
+            }
+        );
+    } catch (err) {
+        res.status(500).json(errorJSON);
+        console.log(err);
+    }
 });
 
 // add a new place
 app.post("/places/new", async (req, res) => {
-    const {
-        name,
-        description,
-        location,
-        price,
-        minimumBooking,
-        maximumBooking,
-        rooms,
-        beds,
-        bathRooms,
-        photos,
-        maxGuests,
-    } = req.body;
-
-    const { authToken } = req.cookies;
-    jwt.verify(authToken, jwtSecretKey, cookieOptions, async (err, data) => {
-        if (err) throw err;
-        const { id } = data;
-        const user = await User.findById(id);
-        if (user.role !== "owner") {
-            return res.status(200).json({
-                message: "You are not authorized to add a new place",
-                type: "warning",
-            });
-        }
-        const newPlace = await Place.create({
-            owner: user._id,
+    try {
+        const {
             name,
             description,
             location,
@@ -258,205 +270,328 @@ app.post("/places/new", async (req, res) => {
             bathRooms,
             photos,
             maxGuests,
-        });
-        res.status(200).json({
-            message: "Place created successfully",
-            type: "success",
-            newPlace,
-        });
-    });
+        } = req.body;
+
+        const { authToken } = req.cookies;
+        jwt.verify(
+            authToken,
+            jwtSecretKey,
+            cookieOptions,
+            async (err, data) => {
+                if (err) throw err;
+                const { id } = data;
+                const user = await User.findById(id);
+                if (user.role !== "owner") {
+                    return res.status(200).json({
+                        message: "You are not authorized to add a new place",
+                        type: "warning",
+                    });
+                }
+                const newPlace = await Place.create({
+                    owner: user._id,
+                    name,
+                    description,
+                    location,
+                    price,
+                    minimumBooking,
+                    maximumBooking,
+                    rooms,
+                    beds,
+                    bathRooms,
+                    photos,
+                    maxGuests,
+                });
+                res.status(200).json({
+                    message: "Place created successfully",
+                    type: "success",
+                    newPlace,
+                });
+            }
+        );
+    } catch (err) {
+        res.status(500).json(errorJSON);
+        console.log(err);
+    }
 });
 
 // get all listing of the particular user
 app.get("/listings", (req, res) => {
-    const { authToken } = req.cookies;
-    jwt.verify(authToken, jwtSecretKey, cookieOptions, async (err, data) => {
-        if (err) throw err;
-        const { id } = data;
-        const user = await User.findById(id);
-        if (user.role !== "owner") {
-            return res.status(200).json({
-                message: "You are not authorized",
-                type: "warning",
-            });
-        }
-        const places = await Place.find({ owner: id });
-        if (places.length === 0) {
-            return res.status(200).json({
-                places: null,
-                message: "No places found",
-                type: "info",
-            });
-        }
-        // console.log(places);
-        res.status(200).json({ places });
-    });
+    try {
+        const { authToken } = req.cookies;
+        jwt.verify(
+            authToken,
+            jwtSecretKey,
+            cookieOptions,
+            async (err, data) => {
+                if (err) throw err;
+                const { id } = data;
+                const user = await User.findById(id);
+                if (user.role !== "owner") {
+                    return res.status(200).json({
+                        message: "You are not authorized",
+                        type: "warning",
+                    });
+                }
+                const places = await Place.find({ owner: id });
+                if (places.length === 0) {
+                    return res.status(200).json({
+                        places: null,
+                        message: "No places found",
+                        type: "info",
+                    });
+                }
+                // console.log(places);
+                res.status(200).json({ places });
+            }
+        );
+    } catch (err) {
+        res.status(500).json(errorJSON);
+        console.log(err);
+    }
 });
 
 // get details of a place
 
 app.get("/places/edit/:id", async (req, res) => {
-    const { id } = req.params;
-    const place = await Place.findById(id);
-    res.status(200).json(place);
+    try {
+        const { id } = req.params;
+        const place = await Place.findById(id);
+        res.status(200).json(place);
+    } catch (err) {
+        res.status(500).json(errorJSON);
+        console.log(err);
+    }
 });
 
 // update details of a place
 app.put("/places/edit", async (req, res) => {
-    const { authToken } = req.cookies;
-    const placeData = req.body;
-    jwt.verify(authToken, jwtSecretKey, cookieOptions, async (err, data) => {
-        if (err) throw err;
-        const { id } = data;
-        const place = await Place.findById(placeData.id);
-        if (place.owner.toString() !== id) {
-            return res.status(200).json({
-                message: "You are not authorized to edit this place",
-                type: "warning",
-            });
-        }
-        place.set(placeData);
-        place.save();
-        res.status(200).json({
-            message: "Your place has been updated",
-            type: "success",
-        });
-    });
+    try {
+        const { authToken } = req.cookies;
+        const placeData = req.body;
+        jwt.verify(
+            authToken,
+            jwtSecretKey,
+            cookieOptions,
+            async (err, data) => {
+                if (err) throw err;
+                const { id } = data;
+                const place = await Place.findById(placeData.id);
+                if (place.owner.toString() !== id) {
+                    return res.status(200).json({
+                        message: "You are not authorized to edit this place",
+                        type: "warning",
+                    });
+                }
+                place.set(placeData);
+                place.save();
+                res.status(200).json({
+                    message: "Your place has been updated",
+                    type: "success",
+                });
+            }
+        );
+    } catch (err) {
+        res.status(500).json(errorJSON);
+        console.log(err);
+    }
 });
 
 // delete a place
 app.delete("/place/:id", async (req, res) => {
-    const { id } = req.params;
-    const place = await Place.findByIdAndDelete(id);
+    try {
+        const { id } = req.params;
+        const place = await Place.findByIdAndDelete(id);
 
-    // delete the photos of the place
-    const photos = place.photos;
-    for (let i = 0; i < photos.length; i++) {
-        const photo = photos[i];
-        fs.unlink(`uploads/${photo}`, (err) => {
-            if (err) throw err;
+        // delete the photos of the place
+        const photos = place.photos;
+        for (let i = 0; i < photos.length; i++) {
+            const photo = photos[i];
+            fs.unlink(`uploads/${photo}`, (err) => {
+                if (err) throw err;
+            });
+        }
+        res.status(200).json({
+            message: "Place deleted successfully",
+            type: "warning",
+            places: null,
         });
+    } catch (err) {
+        res.status(500).json(errorJSON);
+        console.log(err);
     }
-    res.status(200).json({
-        message: "Place deleted successfully",
-        type: "warning",
-        places: null,
-    });
 });
 
 // get all the reservations for a particular owner
 app.get("/reservations", (req, res) => {
-    const { authToken } = req.cookies;
-    if (!authToken) {
-        res.status(200).json({
-            message: "you are not authorized to access",
-            type: "warning",
-        });
-    }
-    jwt.verify(authToken, jwtSecretKey, cookieOptions, async (err, data) => {
-        if (err) throw err;
-        const { id } = data;
-        let reservations = await Booking.find({ owner: id })
-            .populate("user")
-            .populate("place");
+    try {
+        const { authToken } = req.cookies;
+        if (!authToken) {
+            res.status(200).json({
+                message: "you are not authorized to access",
+                type: "warning",
+            });
+        }
+        jwt.verify(
+            authToken,
+            jwtSecretKey,
+            cookieOptions,
+            async (err, data) => {
+                if (err) throw err;
+                const { id } = data;
+                let reservations = await Booking.find({ owner: id })
+                    .populate("user")
+                    .populate("place");
 
-        res.status(200).json({ reservations });
-    });
+                res.status(200).json({ reservations });
+            }
+        );
+    } catch (err) {
+        res.status(500).json(errorJSON);
+        console.log(err);
+    }
 });
 
 // ** Customer Routes **
 
 // get all places
 app.get("/places", async (req, res) => {
-    const places = await Place.find({});
-    res.status(200).json({ places });
+    try {
+        const places = await Place.find({});
+        res.status(200).json({ places });
+    } catch (err) {
+        res.status(500).json(errorJSON);
+        console.log(err);
+    }
 });
 
 // get details of a place
 app.get("/places/:id", async (req, res) => {
-    const { id } = req.params;
-    const place = await Place.findById(id);
-    let {
-        owner: { name, email },
-    } = await place.populate("owner");
-    place.owner = { name, email };
-    if (!place) {
-        return res.status(200).json({
-            message: "Place not found",
-            type: "warning",
-        });
+    try {
+        const { id } = req.params;
+        const place = await Place.findById(id);
+        let {
+            owner: { name, email },
+        } = await place.populate("owner");
+        place.owner = { name, email };
+        if (!place) {
+            return res.status(200).json({
+                message: "Place not found",
+                type: "warning",
+            });
+        }
+        res.status(200).json({ place });
+    } catch (err) {
+        res.status(500).json(errorJSON);
+        console.log(err);
     }
-    res.status(200).json({ place });
 });
 
 // process booking request
 app.post("/book-place", async (req, res) => {
-    const { checkInDate, checkOutDate, totalPrice, guests, place, totalDays } =
-        req.body;
-    const { authToken } = req.cookies;
-
-    if (!authToken) {
-        return res.json({ message: "Kindly login to book", type: "info" });
-    }
-
-    jwt.verify(authToken, jwtSecretKey, cookieOptions, async (err, data) => {
-        if (err) throw err;
-        const { id } = data;
-        const userDoc = await User.findById(id);
-        const placeDoc = await Place.findById(place);
-
-        if (!userDoc) {
-            return res.json({ message: "Kindly login to book", type: "info" });
-        }
-        const newBooking = await Booking.create({
-            user: userDoc._id,
-            place,
-            owner: placeDoc.owner,
+    try {
+        const {
             checkInDate,
             checkOutDate,
-            price: totalPrice,
-            days: totalDays,
+            totalPrice,
             guests,
-        });
-        res.status(200).json({
-            message: "Your booking request has been sent",
-            type: "success",
-            newBooking,
-        });
-    });
+            place,
+            totalDays,
+        } = req.body;
+        const { authToken } = req.cookies;
+
+        if (!authToken) {
+            return res.json({ message: "Kindly login to book", type: "info" });
+        }
+
+        jwt.verify(
+            authToken,
+            jwtSecretKey,
+            cookieOptions,
+            async (err, data) => {
+                if (err) throw err;
+                const { id } = data;
+                const userDoc = await User.findById(id);
+                const placeDoc = await Place.findById(place);
+
+                if (!userDoc) {
+                    return res.json({
+                        message: "Kindly login to book",
+                        type: "info",
+                    });
+                }
+                const newBooking = await Booking.create({
+                    user: userDoc._id,
+                    place,
+                    owner: placeDoc.owner,
+                    checkInDate,
+                    checkOutDate,
+                    price: totalPrice,
+                    days: totalDays,
+                    guests,
+                });
+                res.status(200).json({
+                    message: "Your booking request has been sent",
+                    type: "success",
+                    newBooking,
+                });
+            }
+        );
+    } catch (err) {
+        res.status(500).json(errorJSON);
+        console.log(err);
+    }
 });
 
 // get all bookings of a place
 app.get("/old-bookings/:id", async (req, res) => {
-    const { id } = req.params;
-    const bookings = await Booking.find({ place: id });
-    if (!bookings) {
-        return res.status(200).json({
-            bookings: null,
-            message: "No bookings found",
+    try {
+        const { id } = req.params;
+        const bookings = await Booking.find({ place: id });
+        if (!bookings) {
+            return res.status(200).json({
+                bookings: null,
+                message: "No bookings found",
+                type: "info",
+            });
+        }
+        res.status(200).json({
+            bookings,
+            message: "Bookings found",
             type: "info",
         });
+    } catch (err) {
+        res.status(500).json(errorJSON);
+        console.log(err);
     }
-    res.status(200).json({ bookings, message: "Bookings found", type: "info" });
 });
 
 app.get("/bookings", (req, res) => {
-    const { authToken } = req.cookies;
-    if (!authToken) {
-        res.status(200).json({
-            message: "you are not authorized to access",
-            type: "warning",
-        });
-    }
-    jwt.verify(authToken, jwtSecretKey, cookieOptions, async (err, data) => {
-        if (err) throw err;
-        const { id } = data;
-        let bookings = await Booking.find({ user: id })
-            .populate("owner")
-            .populate("place");
+    try {
+        const { authToken } = req.cookies;
+        if (!authToken) {
+            res.status(200).json({
+                message: "you are not authorized to access",
+                type: "warning",
+            });
+        }
+        jwt.verify(
+            authToken,
+            jwtSecretKey,
+            cookieOptions,
+            async (err, data) => {
+                if (err) throw err;
+                const { id } = data;
+                let bookings = await Booking.find({ user: id })
+                    .populate("owner")
+                    .populate("place");
 
-        res.status(200).json({ bookings });
-    });
+                res.status(200).json({ bookings });
+            }
+        );
+    } catch (err) {
+        res.status(500).json(errorJSON);
+        console.log(err);
+    }
 });
 
 // starting the server
