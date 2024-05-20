@@ -9,11 +9,14 @@ const RegisterPage = () => {
     const [password, setPassword] = useState("");
     const [role, setRole] = useState("customer");
     const {
+        ready,
+        setReady,
         alert: { setAlertMessage, setAlertType },
     } = useContext(UserContext);
     // submitting form data to register a new user
     const handleSubmit = (event) => {
         event.preventDefault();
+        setReady(false);
         axios
             .post("/register", {
                 name,
@@ -27,7 +30,14 @@ const RegisterPage = () => {
                 setAlertMessage(response.data.message);
                 setAlertType(response.data.type);
             })
-            .catch((error) => console.log(error));
+            .catch((error) => {
+                console.log(error);
+                setAlertMessage(error.response.data.message);
+                setAlertType("error");
+            })
+            .finally(() => {
+                setReady(true);
+            });
     };
     return (
         <div className="flex flex-col items-center justify-center gap-2 mt-24">
@@ -84,7 +94,11 @@ const RegisterPage = () => {
                 />
                 <button
                     type="submit"
-                    className="px-4 py-2 text-white rounded-lg cursor-pointer h-fit bg-primary"
+                    style={{
+                        backgroundColor: `${!ready ? "#aaa" : "#EB1A40"}`,
+                    }}
+                    className="px-4 py-2 text-white rounded-lg cursor-pointer h-fit"
+                    disabled={!ready}
                 >
                     Register
                 </button>
