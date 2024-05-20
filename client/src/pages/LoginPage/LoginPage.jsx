@@ -8,14 +8,16 @@ const LoginPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [redirect, setRedirect] = useState("");
-    const [formLoading, setFormLoading] = useState(false);
     const {
         setUser,
+        ready,
+        setReady,
         alert: { setAlertMessage, setAlertType },
     } = useContext(UserContext);
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        setReady(false);
         axios
             .post("/login", {
                 email,
@@ -41,14 +43,13 @@ const LoginPage = () => {
                 setAlertType("error");
             })
             .finally(() => {
-                setFormLoading(false);
+                setReady(true);
             });
     };
     if (redirect) {
         return <Navigate to={redirect} />;
     }
 
-    console.log(formLoading);
 
     return (
         <>
@@ -79,13 +80,13 @@ const LoginPage = () => {
                     <button
                         type="submit"
                         onClick={(event) => {
-                            setFormLoading(true);
+                            setReady(true);
                             handleSubmit(event);
                         }}
-                        disabled={formLoading}
+                        disabled={!ready}
                         style={{
                             backgroundColor: `${
-                                formLoading ? "#aaa" : "#EB1A40"
+                                !ready ? "#aaa" : "#EB1A40"
                             }`,
                         }}
                         className="px-4 py-2 text-white rounded-lg cursor-pointer h-fit"
