@@ -1,3 +1,4 @@
+import { LocationIcon } from "../../../assets/SVGAssets";
 import { CalendarIcon, MobileIcon, UserIconSmall } from "../assets/SVGAssets";
 
 const ReservationTile = ({ reservation, place, user }) => {
@@ -12,7 +13,7 @@ const ReservationTile = ({ reservation, place, user }) => {
                     alt="thumbnail object-contain rounded-lg"
                 />
             </div>
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-2">
                 <h2 className="font-bold text-xl">{place.name}</h2>
                 <p className="flex gap-2">
                     <UserIconSmall /> {user.name}
@@ -20,6 +21,12 @@ const ReservationTile = ({ reservation, place, user }) => {
                 <p className="flex gap-2">
                     <MobileIcon /> {user.phone}
                 </p>
+                {reservation?.address && (
+                    <p className="flex gap-1 cols-span-1">
+                        <LocationIcon />
+                        {reservation?.address}
+                    </p>
+                )}{" "}
                 <p className="flex gap-2">
                     <CalendarIcon />
                     {reservation.checkInDate +
@@ -31,7 +38,6 @@ const ReservationTile = ({ reservation, place, user }) => {
                         reservation.days === 1 ? "night" : "nights"
                     }`}
                 </p>
-
                 <div className="flex gap-2 font-bold px-2 py-1  bg-primary rounded-lg text-white w-fit">
                     {"₹ " + reservation?.price?.toLocaleString()}
                 </div>

@@ -496,6 +496,8 @@ app.post("/book-place", async (req, res) => {
             guests,
             place,
             totalDays,
+            name,
+            address,
         } = req.body;
         const { authToken } = req.cookies;
 
@@ -528,6 +530,8 @@ app.post("/book-place", async (req, res) => {
                     price: totalPrice,
                     days: totalDays,
                     guests,
+                    name,
+                    address,
                 });
                 res.status(200).json({
                     message: "Your booking request has been sent",

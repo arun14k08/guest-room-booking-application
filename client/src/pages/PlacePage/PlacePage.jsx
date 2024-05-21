@@ -13,6 +13,8 @@ const PlacePage = () => {
     const [place, setPlace] = useState();
     const [checkInDate, setCheckInDate] = useState("");
     const [isCheckInSelected, setIsCheckInSelected] = useState(false);
+    const [name, setName]= useState("");
+    const [address, setAddress] = useState("");
     const [checkOutDate, setCheckOutDate] = useState("");
     const [totalDays, setTotalDays] = useState();
     const [totalPrice, setTotalPrice] = useState();
@@ -23,6 +25,7 @@ const PlacePage = () => {
     const {
         ready,
         setReady,
+        user,
         alert: { setAlertMessage, setAlertType },
     } = useContext(UserContext);
     useEffect(() => {
@@ -74,6 +77,8 @@ const PlacePage = () => {
                 totalDays,
                 totalPrice,
                 guests,
+                name,
+                address,
                 place: id,
             })
             .then((response) => {
@@ -177,6 +182,11 @@ const PlacePage = () => {
                             handleSubmit={handleSubmit}
                             bookings={bookings}
                             isCheckInSelected={isCheckInSelected}
+                            name={name}
+                            address={address}
+                            setName={setName}
+                            setAddress={setAddress}
+                            user={user}
                         />
                     ) : (
                         <span>Loading...</span>

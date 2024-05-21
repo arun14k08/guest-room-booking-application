@@ -7,6 +7,10 @@ const BookingForm = ({
     guests,
     totalDays,
     totalPrice,
+    name,
+    address,
+    setAddress,
+    setName,
     setCheckInDate,
     setCheckOutDate,
     setGuests,
@@ -16,6 +20,7 @@ const BookingForm = ({
     handleSubmit,
     bookings,
     isCheckInSelected,
+    user,
 }) => {
     return (
         <form
@@ -86,6 +91,12 @@ const BookingForm = ({
                 />
             </div>
             <div className={`${checkOutDate ? "visible" : "hidden"}`}>
+                <label htmlFor="name">
+                    <input type="text" name="name"value={name} placeholder="Enter your Name" onChange={(event)=> setName(event.target.value)} />
+                </label>
+                <label htmlFor="address">
+                    <textarea name="address"value={address} placeholder="Enter your Address" onChange={(event)=> setAddress(event.target.value)}/>
+                </label>
                 <label htmlFor="guests">
                     No of Guests: <b>Max- {place?.maxGuests}</b>
                     <input
