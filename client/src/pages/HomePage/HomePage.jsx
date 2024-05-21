@@ -21,7 +21,12 @@ const HomePage = () => {
                 setPlaces(response.data.places);
             })
             .catch((err) => {
-                setAlertMessage(err.response.data.message);
+                let alertText =
+                    "Server is not responding, refresh and try again";
+                if (err.response) {
+                    alertText = err.response.data.message;
+                }
+                setAlertMessage(alertText);
                 setAlertType("error");
             })
             .finally(() => {

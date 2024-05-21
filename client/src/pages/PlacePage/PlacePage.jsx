@@ -34,7 +34,12 @@ const PlacePage = () => {
                 setPlace(response.data.place);
             })
             .catch((err) => {
-                setAlertMessage(err.response.data.message);
+                let alertText =
+                    "Server is not responding, refresh and try again";
+                if (err.response) {
+                    alertText = err.response.data.message;
+                }
+                setAlertMessage(alertText);
                 setAlertType("error");
             })
             .finally(() => {
@@ -47,7 +52,12 @@ const PlacePage = () => {
                 setBookings(response.data.bookings);
             })
             .catch((err) => {
-                setAlertMessage(err.response.data.message);
+                let alertText =
+                    "Server is not responding, refresh and try again";
+                if (err.response.data.message) {
+                    alertText = err.response.data.message;
+                }
+                setAlertMessage(alertText);
                 setAlertType("error");
             })
             .finally(() => {

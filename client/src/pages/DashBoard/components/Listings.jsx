@@ -27,8 +27,13 @@ const Listings = ({ places, redirectToEditPage, setPlaces, ready }) => {
                 setAlertType(response.data.type);
             })
             .catch((err) => {
-                setAlertMessage(err.response.data.message);
-                setAlertType("error");
+                let alertText =
+                "Server is not responding, refresh and try again";
+            if (err.response) {
+                alertText = err.response.data.message;
+            }
+            setAlertMessage(alertText);
+            setAlertType("error");
             });
     };
 

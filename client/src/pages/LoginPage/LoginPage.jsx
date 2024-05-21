@@ -38,8 +38,12 @@ const LoginPage = () => {
                 }
             })
             .catch((err) => {
-                const message = err.response.data.message;
-                setAlertMessage(message);
+                let alertText =
+                    "Server is not responding, refresh and try again";
+                if (err.response) {
+                    alertText = err.response.data.message;
+                }
+                setAlertMessage(alertText);
                 setAlertType("error");
             })
             .finally(() => {
@@ -49,7 +53,6 @@ const LoginPage = () => {
     if (redirect) {
         return <Navigate to={redirect} />;
     }
-
 
     return (
         <>
@@ -85,9 +88,7 @@ const LoginPage = () => {
                         }}
                         disabled={!ready}
                         style={{
-                            backgroundColor: `${
-                                !ready ? "#aaa" : "#EB1A40"
-                            }`,
+                            backgroundColor: `${!ready ? "#aaa" : "#EB1A40"}`,
                         }}
                         className="px-4 py-2 text-white rounded-lg cursor-pointer h-fit"
                     >

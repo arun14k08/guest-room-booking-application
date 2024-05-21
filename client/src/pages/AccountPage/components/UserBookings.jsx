@@ -19,7 +19,12 @@ const UserBookings = () => {
                 setBookings(response.data.bookings);
             })
             .catch((err) => {
-                setAlertMessage(err.response.data.message);
+                let alertText =
+                    "Server is not responding, refresh and try again";
+                if (err.response) {
+                    alertText = err.response.data.message;
+                }
+                setAlertMessage(alertText);
                 setAlertType("error");
             })
             .finally(() => {

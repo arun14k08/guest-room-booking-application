@@ -30,9 +30,13 @@ const RegisterPage = () => {
                 setAlertMessage(response.data.message);
                 setAlertType(response.data.type);
             })
-            .catch((error) => {
-                console.log(error);
-                setAlertMessage(error.response.data.message);
+            .catch((err) => {
+                let alertText =
+                    "Server is not responding, refresh and try again";
+                if (err.response) {
+                    alertText = err.response.data.message;
+                }
+                setAlertMessage(alertText);
                 setAlertType("error");
             })
             .finally(() => {
