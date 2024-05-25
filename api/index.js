@@ -599,7 +599,7 @@ app.get("/bookings", (req, res) => {
 });
 
 // starting the server
-let PORT = 3000;
+let PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log("listening on port " + PORT);
 });
