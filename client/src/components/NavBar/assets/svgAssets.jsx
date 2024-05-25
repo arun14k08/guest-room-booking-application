@@ -71,3 +71,7 @@ export const ProfileIcon = () => {
         </svg>
     );
 };
+
+const SVGAssets = { ProfileIcon, MenuIcon, SearchIcon, BrandLogo };
+
+export default SVGAssets;
