@@ -7,8 +7,7 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# uploaded files folder
-uploads
+
 
 node_modules
 dist
