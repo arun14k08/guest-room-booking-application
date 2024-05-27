@@ -24,7 +24,7 @@ const app = express();
 app.use(
     cors({
         credentials: true,
-        origin: "https://main--elite-bookings.netlify.app/",
+        origin: "https://main--elite-bookings.netlify.app",
     })
 );
 
