@@ -1,4 +1,4 @@
-import { BrandLogo, MenuIcon, ProfileIcon } from "./assets/SVGAssets.jsx";
+import { BrandLogo, MenuIcon, ProfileIcon } from "./assets/svgAssets.jsx";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../../context/UserContextProvider";
