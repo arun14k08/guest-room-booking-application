@@ -4,7 +4,7 @@ import axios from "axios";
 import UserContextProvider from "./context/UserContextProvider";
 
 axios.defaults.baseURL =
-    "https://guest-room-booking-application-5akp.onrender.com/";
+    "https://guest-room-booking-application-5akp.onrender.com";
 axios.defaults.withCredentials = true;
 
 const App = () => {
