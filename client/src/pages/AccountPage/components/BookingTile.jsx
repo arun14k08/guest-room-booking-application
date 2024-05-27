@@ -10,7 +10,7 @@ const BookingTile = ({ booking, place, owner }) => {
             <div className="w-[300px] h-[200px] flex justify-center items-center rounded-lg overflow-hidden m-1">
                 <img
                     src={
-                        "https://guest-room-booking-application-5akp.onrender.com//uploads/" +
+                        "https://guest-room-booking-application-5akp.onrender.com/uploads/" +
                         booking?.place?.photos[0]
                     }
                     alt="thumbnail object-contain rounded-lg"

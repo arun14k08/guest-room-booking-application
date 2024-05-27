@@ -14,7 +14,7 @@ export const BedIcon = () => {
 export const Thumbnail = ({ photo }) => {
     return (
         <img
-            src={`https://guest-room-booking-application-5akp.onrender.com//uploads/${photo}`}
+            src={`https://guest-room-booking-application-5akp.onrender.com/uploads/${photo}`}
             alt="thumbnail"
             className="rounded-lg object-cover"
         />
