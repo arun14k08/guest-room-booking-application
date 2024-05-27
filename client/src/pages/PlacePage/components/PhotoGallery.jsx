@@ -17,7 +17,10 @@ const PhotoGallery = ({ setShowGallery, photos }) => {
                     return (
                         <img
                             key={index}
-                            src={"http://localhost:3000/uploads/" + photos}
+                            src={
+                                "https://guest-room-booking-application-5akp.onrender.com//uploads/" +
+                                photos
+                            }
                             className="rounded-lg object-cover"
                         />
                     );

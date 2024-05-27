@@ -306,7 +306,7 @@ const PlaceForm = () => {
                                 >
                                     <img
                                         src={
-                                            "http://localhost:3000/uploads/" +
+                                            "https://guest-room-booking-application-5akp.onrender.com//uploads/" +
                                             photo
                                         }
                                         className="rounded-lg object-cover"
@@ -329,11 +329,14 @@ const PlaceForm = () => {
                         </p>
                     )}
                 </div>
-                <button  style={{
-                            backgroundColor: `${
-                                !ready ? "#aaa" : "#EB1A40"
-                            }`,
-                        }} disabled={!ready} className="px-4 py-2 rounded-lg text-white " type="submit">
+                <button
+                    style={{
+                        backgroundColor: `${!ready ? "#aaa" : "#EB1A40"}`,
+                    }}
+                    disabled={!ready}
+                    className="px-4 py-2 rounded-lg text-white "
+                    type="submit"
+                >
                     {submitText}
                 </button>
             </form>
