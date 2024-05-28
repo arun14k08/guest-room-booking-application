@@ -8,6 +8,7 @@ import BookingForm from "./components/BookingForm";
 import { ProfileIconBig } from "./assets/SVGAssets";
 import { RoomIcon } from "../DashBoard/assets/SVGAssets";
 import { BedIcon } from "../DashBoard/assets/ImageAssets";
+import LoadingSpinner from "../../components/Spinner/LoadingSpinner";
 const PlacePage = () => {
     const { id } = useParams();
     const [place, setPlace] = useState();
@@ -94,7 +95,7 @@ const PlacePage = () => {
     };
 
     if (!ready) {
-        return <p>Loading...</p>;
+        return <LoadingSpinner/>;
     }
 
     if (redirect) {
@@ -189,7 +190,7 @@ const PlacePage = () => {
                             user={user}
                         />
                     ) : (
-                        <span>Loading...</span>
+                        <LoadingSpinner/>
                     )}
                 </div>
             </div>

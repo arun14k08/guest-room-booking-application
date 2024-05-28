@@ -2,6 +2,7 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import ReservationTile from "./ReservationTile";
 import { UserContext } from "../../../context/UserContextProvider";
+import LoadingSpinner from "../../../components/Spinner/LoadingSpinner";
 
 const Reservations = () => {
     const [reservations, setReservations] = useState(null);
@@ -16,7 +17,7 @@ const Reservations = () => {
         }
     }, []);
 
-    if (!ready) return <p>Loading...</p>;
+    if (!ready) return <LoadingSpinner />;
 
     return (
         <div className="mt-12 mx-24 flex flex-col gap-4">

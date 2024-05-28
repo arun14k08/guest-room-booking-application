@@ -2,6 +2,7 @@ import { RouterProvider } from "react-router";
 import { Router } from "./Router";
 import axios from "axios";
 import UserContextProvider from "./context/UserContextProvider";
+import LoadingSpinner from "./components/Spinner/LoadingSpinner";
 
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 axios.defaults.withCredentials = true;
@@ -12,7 +13,7 @@ const App = () => {
             <UserContextProvider>
                 <RouterProvider
                     router={Router}
-                    fallbackElement={"Loading..."}
+                    fallbackElement={<LoadingSpinner/>}
                 />
             </UserContextProvider>
         </div>

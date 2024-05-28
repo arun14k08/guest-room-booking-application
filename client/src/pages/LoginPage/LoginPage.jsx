@@ -2,6 +2,7 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { UserContext } from "../../context/UserContextProvider";
+import { MailIcon, PasswordIcon } from "../../assets/SVGAssets";
 // import LoginButton from "./components/LoginButton";
 
 const LoginPage = () => {
@@ -101,13 +102,37 @@ const LoginPage = () => {
                         </Link>
                     </p>
                 </form>
-                <div>
-                    <h1>Test User</h1>
-                   <ul>
-                        <li>Owner</li>
-                        <li>Customer</li>
-                   </ul>
-
+                <div className="flex flex-col gap-1 justify-around bg-slate-200 py-2 px-4 rounded-lg">
+                    <h3 className="text-center text-3xl font-bold font-dance">
+                        Demo Users
+                    </h3>
+                    <div className="px-4 py-2 rounded-lg">
+                        <h2 className="text-center text-xl font-semibold">
+                            Owner
+                        </h2>
+                        <ul className="flex flex-col gap-1">
+                            <li className="flex gap-1 items-center">
+                                <MailIcon /> owner@demo.com
+                            </li>
+                            <li className="flex gap-1 items-center">
+                                <PasswordIcon /> demo
+                            </li>
+                        </ul>
+                    </div>
+                    <hr className="bg-black h-[2px]"/>
+                    <div className="px-4 py-2 rounded-lg">
+                        <h2 className="text-center text-xl font-semibold">
+                            Customer
+                        </h2>
+                        <ul className="flex flex-col gap-1">
+                            <li className="flex gap-1 items-center">
+                                <MailIcon /> customer@demo.com
+                            </li>
+                            <li className="flex gap-1 items-center">
+                                <PasswordIcon /> demo
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </>

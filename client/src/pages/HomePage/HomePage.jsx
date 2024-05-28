@@ -3,6 +3,7 @@ import { UserContext } from "../../context/UserContextProvider";
 import { Navigate } from "react-router";
 import axios from "axios";
 import PlaceTile from "./components/PlaceTile";
+import LoadingSpinner from "../../components/Spinner/LoadingSpinner";
 
 const HomePage = () => {
     const {
@@ -35,7 +36,7 @@ const HomePage = () => {
     }, []);
 
     if (!ready) {
-        return <p>Loading...</p>;
+        return <LoadingSpinner/>;
     }
     if (user?.role === "owner") {
         return <Navigate to={"/dashboard"} />;
