@@ -20,7 +20,8 @@ const PhotoPreview = ({ photos }) => {
             <div className="flex justify-center items-center w-full h-[480px]">
                 <img
                     src={
-                        "https://guest-room-booking-application-5akp.onrender.com/uploads/" +
+                        import.meta.env.VITE_BACKEND_URL +
+                        "/uploads/" +
                         photos[0]
                     }
                     alt="photo"
@@ -37,7 +38,8 @@ const PhotoPreview = ({ photos }) => {
                             <img
                                 key={index}
                                 src={
-                                    "https://guest-room-booking-application-5akp.onrender.com/uploads/" +
+                                    import.meta.env.VITE_BACKEND_URL +
+                                    "/uploads/" +
                                     photo
                                 }
                                 alt="photo"

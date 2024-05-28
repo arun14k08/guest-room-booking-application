@@ -3,8 +3,7 @@ import { Router } from "./Router";
 import axios from "axios";
 import UserContextProvider from "./context/UserContextProvider";
 
-axios.defaults.baseURL =
-    "https://guest-room-booking-application-5akp.onrender.com";
+axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 axios.defaults.withCredentials = true;
 
 const App = () => {

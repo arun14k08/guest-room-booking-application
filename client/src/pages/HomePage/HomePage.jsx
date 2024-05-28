@@ -43,7 +43,7 @@ const HomePage = () => {
     return (
         <div className="px-16 py-4 -mx-8">
             <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {places.map((place) => {
+                {places?.map((place) => {
                     return (
                         <div key={place._id}>
                             <PlaceTile place={place} />

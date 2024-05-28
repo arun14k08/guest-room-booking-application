@@ -22,7 +22,7 @@ const PlaceTile = ({ place }) => {
             className="shadow-lg px-4 py-4 rounded-md flex flex-col justify-center cursor-pointer hover:scale-105 transition-all bg-white"
         >
             <img
-                src={`https://guest-room-booking-application-5akp.onrender.com/uploads/${place.photos[0]}`}
+                src={`${import.meta.env.VITE_BACKEND_URL}/uploads/${place.photos[0]}`}
                 alt={"thumbnail-" + place.photos[0]}
                 className="w-full aspect-square rounded-lg object-cover"
             />

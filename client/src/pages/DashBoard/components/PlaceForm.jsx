@@ -306,7 +306,7 @@ const PlaceForm = () => {
                                 >
                                     <img
                                         src={
-                                            "https://guest-room-booking-application-5akp.onrender.com/uploads/" +
+                                            import.meta.env.VITE_BACKEND_URL+"/uploads/" +
                                             photo
                                         }
                                         className="rounded-lg object-cover"
