@@ -2,6 +2,7 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import BookingTile from "./BookingTile";
 import { UserContext } from "../../../context/UserContextProvider";
+import LoadingSpinner from "../../../components/Spinner/LoadingSpinner";
 
 const UserBookings = () => {
     const {
@@ -32,7 +33,7 @@ const UserBookings = () => {
             });
     }, []);
 
-    if (!ready) return <p>Loading...</p>;
+    if (!ready) return <LoadingSpinner/>;
 
     return (
         <div className="flex flex-col gap-2">

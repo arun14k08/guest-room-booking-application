@@ -4,6 +4,7 @@ import { Navigate } from "react-router";
 import axios from "axios";
 import Listings from "./components/Listings";
 import { AddIcon, ListingsIcon, MenuIcon } from "./assets/SVGAssets";
+import LoadingSpinner from "../../components/Spinner/LoadingSpinner";
 
 const DashBoard = () => {
     const {
@@ -38,7 +39,7 @@ const DashBoard = () => {
         return <Navigate to={redirect} />;
     }
     if (!ready) {
-        return <p>Loading...</p>;
+        return <LoadingSpinner/>;
     }
 
     if (ready && !user) {

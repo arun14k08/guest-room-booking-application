@@ -4,7 +4,7 @@
   "description": "\"backend api\"",
   "main": "index.js",
   "scripts": {
-    "devStart": "nodemon index",
+    "dev": "nodemon index",
     "start":"node index"
   },
   "author": "",

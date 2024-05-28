@@ -6,6 +6,7 @@ import { useContext, useState } from "react";
 import DeletePlaceModal from "./DeletePlaceModal";
 import axios from "axios";
 import { UserContext } from "../../../context/UserContextProvider";
+import LoadingSpinner from "../../../components/Spinner/LoadingSpinner";
 
 const Listings = ({ places, redirectToEditPage, setPlaces, ready }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,7 +39,7 @@ const Listings = ({ places, redirectToEditPage, setPlaces, ready }) => {
     };
 
     if (!ready) {
-        return <div>Loading...</div>;
+        return <LoadingSpinner/>;
     }
 
     if (ready && !places) {
