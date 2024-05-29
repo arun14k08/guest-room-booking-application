@@ -12,7 +12,7 @@ const HomePage = () => {
         setReady,
         alert: { setAlertMessage, setAlertType },
     } = useContext(UserContext);
-    const [places, setPlaces] = useState([]);
+    const [places, setPlaces] = useState();
 
     useEffect(() => {
         setReady(false);
@@ -35,7 +35,7 @@ const HomePage = () => {
             });
     }, []);
 
-    if (!ready) {
+    if (!ready || !places) {
         return <LoadingSpinner/>;
     }
     if (user?.role === "owner") {
