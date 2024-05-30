@@ -3,12 +3,14 @@ import { useContext, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import { UserContext } from "../../context/UserContextProvider";
 import { MailIcon, PasswordIcon } from "../../assets/SVGAssets";
+import { EyeClosed, EyeOpen } from "./SVGAssets";
 // import LoginButton from "./components/LoginButton";
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [redirect, setRedirect] = useState("");
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const {
         setUser,
         ready,
@@ -74,13 +76,26 @@ const LoginPage = () => {
                         }
                         required
                     />
-                    <input
-                        type="password"
-                        placeholder="Enter your Password"
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)}
-                        required
-                    />
+                    <div className="flex gap-2 justify-center items-center relative">
+                        <input
+                            type={isPasswordVisible ? "text" : "password"}
+                            placeholder="Enter your Password"
+                            value={password}
+                            onChange={(event) =>
+                                setPassword(event.target.value)
+                            }
+                            required
+                        />
+                        <button
+                            className="absolute right-3"
+                            onClick={(ev) => {
+                                ev.preventDefault();
+                                setIsPasswordVisible((prev) => !prev);
+                            }}
+                        >
+                            {isPasswordVisible ? <EyeOpen /> : <EyeClosed />}
+                        </button>
+                    </div>
                     <button
                         type="submit"
                         onClick={(event) => {
@@ -119,7 +134,7 @@ const LoginPage = () => {
                             </li>
                         </ul>
                     </div>
-                    <hr className="bg-black h-[2px]"/>
+                    <hr className="bg-black h-[2px]" />
                     <div className="px-4 py-2 rounded-lg">
                         <h2 className="text-center text-xl font-semibold">
                             Customer
