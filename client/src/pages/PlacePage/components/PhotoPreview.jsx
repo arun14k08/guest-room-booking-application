@@ -19,11 +19,7 @@ const PhotoPreview = ({ photos }) => {
         >
             <div className="flex justify-center items-center w-full h-[480px]">
                 <img
-                    src={
-                        import.meta.env.VITE_BACKEND_URL +
-                        "/uploads/" +
-                        photos[0]
-                    }
+                    src={`${import.meta.env.VITE_UPLOAD_CARE_URL}${photos[0]}/`}
                     alt="photo"
                     className="object-cover min-h-[480px]"
                 />
@@ -37,11 +33,9 @@ const PhotoPreview = ({ photos }) => {
                         return (
                             <img
                                 key={index}
-                                src={
-                                    import.meta.env.VITE_BACKEND_URL +
-                                    "/uploads/" +
-                                    photo
-                                }
+                                src={`${
+                                    import.meta.env.VITE_UPLOAD_CARE_URL
+                                }${photo}/`}
                                 alt="photo"
                                 className="h-full aspect-video"
                             />

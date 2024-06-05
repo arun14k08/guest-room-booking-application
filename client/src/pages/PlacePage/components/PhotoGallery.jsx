@@ -13,14 +13,13 @@ const PhotoGallery = ({ setShowGallery, photos }) => {
                 <BackIcon />
             </button>
             <div className="flex flex-col gap-4 rounded-lg p-16 pl-18 px-56 pb-4">
-                {photos.map((photos, index) => {
+                {photos.map((photo, index) => {
                     return (
                         <img
                             key={index}
-                            src={
-                                import.meta.env.VITE_BACKEND_URL+"/uploads/" +
-                                photos
-                            }
+                            src={`${
+                                import.meta.env.VITE_UPLOAD_CARE_URL
+                            }${photo}/`}
                             className="rounded-lg object-cover"
                         />
                     );

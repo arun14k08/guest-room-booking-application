@@ -7,6 +7,7 @@ const UserContextProvider = ({ children }) => {
     const [ready, setReady] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
     const [alertType, setAlertType] = useState("");
+    const [places, setPlaces] = useState();
 
     const alert = {
         setAlertMessage,
@@ -41,6 +42,8 @@ const UserContextProvider = ({ children }) => {
                 ready,
                 setReady,
                 alert,
+                places,
+                setPlaces,
             }}
         >
             <div className="fixed rounded-lg top-24 right-8 shadow-xl overflow-hidden z-10 transition-all">

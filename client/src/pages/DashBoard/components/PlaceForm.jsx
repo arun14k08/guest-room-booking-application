@@ -2,7 +2,7 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { Navigate, useParams } from "react-router";
 import { UserContext } from "../../../context/UserContextProvider";
-import { DeleteIcon, UploadIcon } from "../assets/SVGAssets";
+import ImageUploader from "./ImageUploader";
 
 const PlaceForm = () => {
     const [photos, setPhotos] = useState([]);
@@ -46,40 +46,6 @@ const PlaceForm = () => {
             setMaxGuests(data.maxGuests);
         });
     }, [id]);
-
-    const uploadPhoto = (event) => {
-        const data = new FormData();
-        const files = event.target.files;
-        for (let i = 0; i < files.length; i++) {
-            data.append("photos", files[i]);
-        }
-        axios
-            .post("/upload", data, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            })
-            .then((response) => {
-                const { links, message, type } = response.data;
-                setAlertMessage(message);
-                setAlertType(type);
-                setPhotos((prev) => [...prev, ...links]);
-            });
-    };
-
-    const handleDeletePhoto = (event, photo) => {
-        event.preventDefault();
-        axios.delete("/photo/" + photo).then((response) => {
-            const {
-                data: { message, type },
-            } = response;
-            setAlertMessage(message);
-            setAlertType(type);
-            setPhotos((prev) =>
-                prev.filter((prevPhoto) => prevPhoto !== photo)
-            );
-        });
-    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -281,54 +247,7 @@ const PlaceForm = () => {
                     />
                 </label>
                 <p>Photos:</p>
-                <div className="grid grid-cols-4 lg:grid-cols-4 gap-4">
-                    <label htmlFor="photo" className="cursor-pointer h-32">
-                        <div className="w-full h-full gap-4 flex justify-center items-center border-2 border-slate-500 rounded-lg">
-                            <UploadIcon />
-                            <input
-                                id="photo"
-                                type="file"
-                                className="hidden"
-                                onChange={(event) => {
-                                    uploadPhoto(event);
-                                }}
-                                multiple
-                            />
-                            <p>Upload</p>
-                        </div>
-                    </label>
-                    {photos.length > 0 ? (
-                        photos.map((photo, index) => {
-                            return (
-                                <div
-                                    key={index}
-                                    className="flex justify-center items-center h-32 overflow-hidden rounded-lg relative"
-                                >
-                                    <img
-                                        src={
-                                            import.meta.env.VITE_BACKEND_URL+"/uploads/" +
-                                            photo
-                                        }
-                                        className="rounded-lg object-cover"
-                                        alt={"photo" + index}
-                                    />
-                                    <button
-                                        className="absolute bottom-1 right-1 rounded-full bg-slate-200"
-                                        onClick={(event) => {
-                                            handleDeletePhoto(event, photo);
-                                        }}
-                                    >
-                                        <DeleteIcon />
-                                    </button>
-                                </div>
-                            );
-                        })
-                    ) : (
-                        <p className="flex justify-center items-center">
-                            No photos added
-                        </p>
-                    )}
-                </div>
+                <ImageUploader photos={photos} setPhotos={setPhotos} />
                 <button
                     style={{
                         backgroundColor: `${!ready ? "#aaa" : "#EB1A40"}`,
