@@ -179,82 +179,6 @@ app.post("/logout", (req, res) => {
     }
 });
 
-// upload photos of places
-// middleware for uploading photos
-const upload = multer({
-    dest: "uploads",
-});
-app.post("/upload", upload.array("photos", 100), (req, res) => {
-    try {
-        const { authToken } = req.cookies;
-        if (!authToken) {
-            return res.status(200).json({
-                message: "You are not authorized to upload photos",
-                type: "warning",
-            });
-        }
-        jwt.verify(authToken, jwtSecretKey, cookieOptions, (err, data) => {
-            if (err) throw err;
-            const files = req.files;
-            const links = [];
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const [name, ext] = file.originalname.split(".");
-                const newName = `${file.filename}.${ext}`;
-                fs.renameSync(file.path, `uploads/${newName}`);
-                links.push(newName);
-            }
-            let message = "";
-            if (links.length === 1) {
-                message = "Photo Uploaded successfully";
-            } else {
-                message = "Photos Uploaded successfully";
-            }
-
-            res.status(200).json({
-                links,
-                message: message,
-                type: "success",
-            });
-        });
-    } catch (err) {
-        res.status(500).json(errorJSON);
-        console.log(err);
-    }
-});
-
-// delete a photo
-app.delete("/photo/:filename", async (req, res) => {
-    try {
-        const { authToken } = req.cookies;
-        const { filename } = req.params;
-        if (!authToken) {
-            return res.status(200).json({
-                message: "You are not authorized to delete photos",
-                type: "warning",
-            });
-        }
-        jwt.verify(
-            authToken,
-            jwtSecretKey,
-            cookieOptions,
-            async (err, data) => {
-                if (err) throw err;
-                fs.unlink(`uploads/${filename}`, (err) => {
-                    if (err) throw err;
-                    res.status(200).json({
-                        message: "Photo deleted successfully",
-                        type: "warning",
-                    });
-                });
-            }
-        );
-    } catch (err) {
-        res.status(500).json(errorJSON);
-        console.log(err);
-    }
-});
-
 // add a new place
 app.post("/places/new", async (req, res) => {
     try {
@@ -402,14 +326,6 @@ app.delete("/place/:id", async (req, res) => {
         const { id } = req.params;
         const place = await Place.findByIdAndDelete(id);
 
-        // delete the photos of the place
-        const photos = place.photos;
-        for (let i = 0; i < photos.length; i++) {
-            const photo = photos[i];
-            fs.unlink(`uploads/${photo}`, (err) => {
-                if (err) throw err;
-            });
-        }
         res.status(200).json({
             message: "Place deleted successfully",
             type: "success",

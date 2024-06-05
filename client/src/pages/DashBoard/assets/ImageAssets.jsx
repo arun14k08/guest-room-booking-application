@@ -14,7 +14,7 @@ export const BedIcon = () => {
 export const Thumbnail = ({ photo }) => {
     return (
         <img
-            src={`${import.meta.env.VITE_BACKEND_URL}/uploads/${photo}`}
+            src={`${import.meta.env.VITE_UPLOAD_CARE_URL}${photo}/`}
             alt="thumbnail"
             className="rounded-lg object-cover"
         />

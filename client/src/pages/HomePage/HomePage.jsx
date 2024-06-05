@@ -10,33 +10,37 @@ const HomePage = () => {
         user,
         ready,
         setReady,
+        places,
+        setPlaces,
         alert: { setAlertMessage, setAlertType },
     } = useContext(UserContext);
-    const [places, setPlaces] = useState();
 
     useEffect(() => {
-        setReady(false);
-        axios
-            .get("/places")
-            .then((response) => {
-                setPlaces(response.data.places);
-            })
-            .catch((err) => {
-                let alertText =
-                    "Server is not responding, refresh and try again";
-                if (err.response) {
-                    alertText = err.response.data.message;
-                }
-                setAlertMessage(alertText);
-                setAlertType("error");
-            })
-            .finally(() => {
-                setReady(true);
-            });
+        if (user?.role === "owner") return;
+        if (!places) {
+            setReady(false);
+            axios
+                .get("/places")
+                .then((response) => {
+                    setPlaces(response.data.places);
+                })
+                .catch((err) => {
+                    let alertText =
+                        "Server is not responding, refresh and try again";
+                    if (err.response) {
+                        alertText = err.response.data.message;
+                    }
+                    setAlertMessage(alertText);
+                    setAlertType("error");
+                })
+                .finally(() => {
+                    setReady(true);
+                });
+        }
     }, []);
 
     if (!ready || !places) {
-        return <LoadingSpinner/>;
+        return <LoadingSpinner />;
     }
     if (user?.role === "owner") {
         return <Navigate to={"/dashboard"} />;
