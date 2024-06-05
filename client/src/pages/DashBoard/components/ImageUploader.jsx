@@ -25,14 +25,6 @@ const ImageUploader = ({ photos, setPhotos }) => {
                 sourceList="local, url, camera, gdrive"
                 onChange={handleChangeEvent}
             />
-            <button className="button"
-                onClick={(ev) => {
-                    ev.preventDefault();
-                    setPhotos([]);
-                }}
-            >
-                Clear All photos
-            </button>
             <div className="grid grid-cols-4 lg:grid-cols-4 gap-4">
                 {photos?.length > 0 ? (
                     photos?.map((photo, index) => {
