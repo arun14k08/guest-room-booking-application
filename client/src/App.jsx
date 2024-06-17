@@ -6,6 +6,7 @@ import LoadingSpinner from "./components/Spinner/LoadingSpinner";
 
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 axios.defaults.withCredentials = true;
+axios.defaults.headers = ["Content-Type", "application/json"];
 
 const App = () => {
     return (
@@ -13,7 +14,7 @@ const App = () => {
             <UserContextProvider>
                 <RouterProvider
                     router={Router}
-                    fallbackElement={<LoadingSpinner/>}
+                    fallbackElement={<LoadingSpinner />}
                 />
             </UserContextProvider>
         </div>
