@@ -8,7 +8,7 @@ axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 axios.defaults.withCredentials = true;
 axios.defaults.headers.common["Content-Type"] = "application/json";
 axios.defaults.headers.common["Access-Control-Allow-Origin"] =
-    "https://elite-bookings.netlify.app/";
+    "https://elite-bookings.netlify.app";
 axios.defaults.headers.common["Access-Control-Allow-Headers"] =
     "Content-Type, Authorization";
 
