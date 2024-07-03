@@ -9,12 +9,13 @@ import { ProfileIconBig } from "./assets/SVGAssets";
 import { RoomIcon } from "../DashBoard/assets/SVGAssets";
 import { BedIcon } from "../DashBoard/assets/ImageAssets";
 import LoadingSpinner from "../../components/Spinner/LoadingSpinner";
+import PlacePageShimmer from "./components/PlacePageShimmer";
 const PlacePage = () => {
     const { id } = useParams();
     const [place, setPlace] = useState();
     const [checkInDate, setCheckInDate] = useState("");
     const [isCheckInSelected, setIsCheckInSelected] = useState(false);
-    const [name, setName]= useState("");
+    const [name, setName] = useState("");
     const [address, setAddress] = useState("");
     const [checkOutDate, setCheckOutDate] = useState("");
     const [totalDays, setTotalDays] = useState();
@@ -95,15 +96,16 @@ const PlacePage = () => {
     };
 
     if (!ready) {
-        return <LoadingSpinner/>;
+        return <PlacePageShimmer />;
     }
 
     if (redirect) {
         return <Navigate to={redirect} />;
     }
 
+
     return (
-        <div className="mx-24 mb-12">
+        <div className="mx-24 mb-12 fade-in">
             <div className="flex flex-col gap-3">
                 <h1 className="text-[24px] font-semibold">{place?.name}</h1>
                 <p className="underline flex">
@@ -190,12 +192,14 @@ const PlacePage = () => {
                             user={user}
                         />
                     ) : (
-                        <LoadingSpinner/>
+                        <LoadingSpinner />
                     )}
                 </div>
             </div>
         </div>
     );
+
+
 };
 
 export default PlacePage;
