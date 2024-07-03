@@ -1,9 +1,9 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { UserContext } from "../../context/UserContextProvider";
 import { Navigate } from "react-router";
 import axios from "axios";
 import PlaceTile from "./components/PlaceTile";
-import LoadingSpinner from "../../components/Spinner/LoadingSpinner";
+import PlaceCardsShimmer from "./components/PlaceCardsShimmer";
 
 const HomePage = () => {
     const {
@@ -40,7 +40,7 @@ const HomePage = () => {
     }, []);
 
     if (!ready || !places) {
-        return <LoadingSpinner />;
+        return <PlaceCardsShimmer />;
     }
     if (user?.role === "owner") {
         return <Navigate to={"/dashboard"} />;
