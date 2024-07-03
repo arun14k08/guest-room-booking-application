@@ -5,6 +5,7 @@ import { Navigate } from "react-router";
 import Modal from "../../components/Modals/Modal";
 import LogoutModal from "./components/LogoutModal";
 import UserBookings from "./components/UserBookings";
+import BookingsShimmer from "./components/BookingsShimmer";
 
 const AccountPage = () => {
     const {

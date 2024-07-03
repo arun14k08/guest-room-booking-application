@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import BookingTile from "./BookingTile";
 import { UserContext } from "../../../context/UserContextProvider";
 import LoadingSpinner from "../../../components/Spinner/LoadingSpinner";
+import BookingsShimmer from "./BookingsShimmer";
 
 const UserBookings = () => {
     const {
@@ -33,10 +34,10 @@ const UserBookings = () => {
             });
     }, []);
 
-    if (!ready) return <LoadingSpinner/>;
+    if (!ready) return <BookingsShimmer />;
 
     return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 px-8 fade-in">
             {bookings?.length > 0 ? (
                 <span className="font-bold text-xl">
                     My Bookings ({bookings?.length})

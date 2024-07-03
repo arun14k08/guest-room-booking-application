@@ -7,6 +7,7 @@ import DeletePlaceModal from "./DeletePlaceModal";
 import axios from "axios";
 import { UserContext } from "../../../context/UserContextProvider";
 import LoadingSpinner from "../../../components/Spinner/LoadingSpinner";
+import ListingsShimmer from "./ListingsShimmer";
 
 const Listings = ({ places, redirectToEditPage, setPlaces, ready }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,17 +30,17 @@ const Listings = ({ places, redirectToEditPage, setPlaces, ready }) => {
             })
             .catch((err) => {
                 let alertText =
-                "Server is not responding, refresh and try again";
-            if (err.response) {
-                alertText = err.response.data.message;
-            }
-            setAlertMessage(alertText);
-            setAlertType("error");
+                    "Server is not responding, refresh and try again";
+                if (err.response) {
+                    alertText = err.response.data.message;
+                }
+                setAlertMessage(alertText);
+                setAlertType("error");
             });
     };
 
     if (!ready) {
-        return <LoadingSpinner/>;
+        return <LoadingSpinner />;
     }
 
     if (ready && !places) {

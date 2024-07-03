@@ -2,7 +2,7 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import ReservationTile from "./ReservationTile";
 import { UserContext } from "../../../context/UserContextProvider";
-import LoadingSpinner from "../../../components/Spinner/LoadingSpinner";
+import ReservationsShimmer from "./ReservationsShimmer";
 
 const Reservations = () => {
     const [reservations, setReservations] = useState(null);
@@ -17,10 +17,10 @@ const Reservations = () => {
         }
     }, []);
 
-    if (!ready) return <LoadingSpinner />;
+    if (!ready) return <ReservationsShimmer />;
 
     return (
-        <div className="mt-12 mx-24 flex flex-col gap-4">
+        <div className="mt-12 mx-24 flex flex-col gap-4 fade-in">
             {reservations?.length === 0 ? (
                 <span className="text-2xl font-semibold">No Reservations</span>
             ) : (
