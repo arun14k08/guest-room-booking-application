@@ -6,14 +6,6 @@ import LoadingSpinner from "./components/Spinner/LoadingSpinner";
 
 axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
 axios.defaults.withCredentials = true;
-axios.defaults.headers.common["Content-Type"] = "application/json";
-axios.defaults.headers.common["Access-Control-Allow-Origin"] =
-    "*";
-axios.defaults.headers.common["Access-Control-Allow-Methods"] =
-    "GET, POST, PUT, DELETE, OPTIONS";
-axios.defaults.headers.common["Access-Control-Allow-Headers"] =
-    "Content-Type, Authorization";
-
 const App = () => {
     return (
         <div className="w-full px-8 py-2">
