@@ -5,6 +5,10 @@ import axios from "axios";
 import Listings from "./components/Listings";
 import { AddIcon, ListingsIcon, MenuIcon } from "./assets/SVGAssets";
 import LoadingSpinner from "../../components/Spinner/LoadingSpinner";
+import BookingsShimmer from "../AccountPage/components/BookingsShimmer";
+import DashBoardShimmer from "./components/ReservationsShimmer";
+import ReservationsShimmer from "./components/ReservationsShimmer";
+import ListingsShimmer from "./components/ListingsShimmer";
 
 const DashBoard = () => {
     const {
@@ -39,7 +43,7 @@ const DashBoard = () => {
         return <Navigate to={redirect} />;
     }
     if (!ready) {
-        return <LoadingSpinner/>;
+        return <ListingsShimmer />;
     }
 
     if (ready && !user) {
@@ -47,7 +51,7 @@ const DashBoard = () => {
     }
 
     return (
-        <div className="flex flex-col justify-center items-center">
+        <div className="flex flex-col justify-center items-center mx-24 fade-in">
             <div className="px-8 mt-8 w-full justify-end">
                 <button
                     onClick={() => {

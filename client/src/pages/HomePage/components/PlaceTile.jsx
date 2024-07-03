@@ -19,7 +19,7 @@ const PlaceTile = ({ place }) => {
             onClick={() => {
                 handleRedirect();
             }}
-            className="shadow-lg px-4 py-4 rounded-md flex flex-col justify-center cursor-pointer hover:scale-105 transition-all bg-white"
+            className="shadow-lg px-4 py-4 rounded-md flex flex-col justify-center cursor-pointer hover:scale-105 transition-all bg-white fade-in"
         >
             <img
                 src={`${import.meta.env.VITE_UPLOAD_CARE_URL}${

@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -10,7 +10,9 @@
     /* border:1px solid #ccc; */
 }
 
-input, select, textarea{
+input,
+select,
+textarea {
     width: 100%;
     border: 1px solid rgb(121, 121, 121);
     padding: 4px 8px;
@@ -18,7 +20,40 @@ input, select, textarea{
     margin: 4px;
 }
 
-.button{
+.button {
     @apply px-4 py-2 flex gap-2 text-white rounded-lg cursor-pointer justify-evenly bg-primary;
+}
 
+.buffer > * {
+    animation: buffer 1s normal infinite forwards ease-in-out;
+}
+
+@keyframes buffer {
+    0% {
+        opacity: 45%;
+    }
+    50% {
+        opacity: 100%;
+    }
+    100% {
+        opacity: 45%;
+    }
+}
+
+.fade-in {
+    animation-name: fade-in;
+    animation-timing-function: ease-in-out;
+    animation-duration: 450ms;
+    animation-fill-mode: forwards;
+    animation-iteration-count: 1;
+    animation-direction: normal;
+}
+
+@keyframes fade-in {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 100%;
+    }
 }
