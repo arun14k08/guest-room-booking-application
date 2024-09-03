@@ -1,3 +1,4 @@
+import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import MasterLayout from "./layouts/MasterLayout";
 import HomePage from "./pages/HomePage/HomePage";
@@ -5,10 +6,11 @@ import LoginPage from "./pages/LoginPage/LoginPage";
 import RegisterPage from "./pages/RegisterPage/RegisterPage";
 import DashBoard from "./pages/DashBoard/DashBoard";
 import AccountPage from "./pages/AccountPage/AccountPage";
-import PlaceForm from "./pages/DashBoard/components/PlaceForm";
-import PlacePage from "./pages/PlacePage/PlacePage";
 import DashBoardLayout from "./layouts/DashBoardLayout";
 import Reservations from "./pages/DashBoard/components/Reservations";
+
+const PlaceForm = lazy(() => import("./pages/DashBoard/components/PlaceForm"));
+const PlacePage = lazy(() => import("./pages/PlacePage/PlacePage"));
 
 export const Router = createBrowserRouter([
     {
@@ -46,23 +48,23 @@ export const Router = createBrowserRouter([
                 element: <PlaceForm />,
             },
             {
-                path:":id",
-                element: <PlacePage />
-            }
+                path: ":id",
+                element: <PlacePage />,
+            },
         ],
     },
     {
-        path:"/dashboard",
-        element:<DashBoardLayout/>,
-        children:[
+        path: "/dashboard",
+        element: <DashBoardLayout />,
+        children: [
             {
-                path:"/dashboard",
-                element:<DashBoard/>
+                path: "/dashboard",
+                element: <DashBoard />,
             },
             {
-                path:"reservations",
-                element:<Reservations/>
-            }
-        ]
-    }
+                path: "reservations",
+                element: <Reservations />,
+            },
+        ],
+    },
 ]);
