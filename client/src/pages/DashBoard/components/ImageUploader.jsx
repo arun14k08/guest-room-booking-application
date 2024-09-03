@@ -19,7 +19,7 @@ const ImageUploader = ({ photos, setPhotos }) => {
     return (
         <>
             <FileUploaderMinimal
-                pubkey="8637587047a8efd4abf1"
+                pubkey={`${import.meta.env.VITE_IMAGE_API_KEY}`}
                 maxLocalFileSizeBytes={10000000}
                 imgOnly={true}
                 sourceList="local, url, camera, gdrive"
